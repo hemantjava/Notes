@@ -1,0 +1,82 @@
+Micro Services:-
+--------------
+         many small services in single application , which is expose by the REST web-service.
+		 and should be cloud enabled
+-------------------------------------------------------------------
+
+Problems / challenges in micro services:-
+----------------------------------------
+1)(bounded context )decided boundary of micro-services (Right boundary)
+2)Configuration Management
+3)dynamic load balancing (distributing load cross micro-services)
+4)Visibility and monitoring	
+5)Fault Tolerance
+-----------------------------------------------------------------------
+2) Configuration Management	 
+
+3)dynamic load balancing (distributing load cross micro-services):-
+-----------------------------------------------------------------
+dynamic scale up and down
+                                                   a)(Naming server)Eureka
+                                                   b)Ribbon(Client side load balancing)		 
+												   c)feign(Easier REST client)
+
+												   
+4)Visibility and monitoring	:-
+-----------------------------
+a) Zipkin distributed Tracing
+          ->assign id request to trace the request cross multiple components
+b) Netflix/Zuul API Gateway  
+          ->logging ,security, analytics    
+		  
+5)Fault Tolerance	:-
+----------------------	
+a)Hystrix  
+      ->If service is down then Hystrix provide default response
+	  
+---------------------------------------------------------------------------------------------------------
+
+                             SEE
+
+--------------------------------------------------------------------------------------------------------------
+@ConfigurationProperties:-
+--------------------------
+   Class level configuration to read the properties file values
+   
+   EX:- 
+     applicatoin.properties
+----------------------------
+   limits.service.min=99
+   limits.service.max=999 
+
+        AND
+		
+@Component
+@ConfigurationProperties("limits.service") //prefix 
+public class Configuration {
+	private int min; //suffix
+	private int max;//suffix
+	}
+---------------------------------------------------------------
+Some git command:-
+------------------
+$ mkdir <fname>  -->creating directory
+$ cd <fname>
+$ git init  
+$ git add -A    -->add All files 
+$ git status
+$ git commit -m "First commit"
+-------------------------------------------------------------------------
+
+EnableConfigServer:- to enabling many micro-services
+--------------------------------------------------
+@EnableConfigServer
+@SpringBootApplication
+public class SpringCloudConfigServerApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(SpringCloudConfigServerApplication.class, args);
+	}
+}
+
+	  

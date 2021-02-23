@@ -1,0 +1,6 @@
+Mongodb:-
+
+show dbs -->show list of dbs 
+use <db>  --> select perticular db
+db.products.insertOne()  -->insert single entry in perticular collection
+db.products.find()  -->find all entries in perticular collection

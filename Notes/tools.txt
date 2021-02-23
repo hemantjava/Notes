@@ -1,0 +1,39 @@
+<!-- nexus/content/groups/main-repo repository required -->
+<dependencies>
+		<dependency>
+			<groupId>com.oracle</groupId>
+			<artifactId>ojdbc6</artifactId>
+			<version>11.2.0.3</version>
+		</dependency>
+	</dependencies>
+	<repositories>
+		<!-- Repository for ORACLE ojdbc6 -->
+		<repository>
+			<id>codelds</id>
+			<url>https://code.lds.org/nexus/content/groups/main-repo</url>
+		</repository>
+	</repositories>
+	
+--------------------------------------------------------------------------	
+Sonar - Open Source Project and Code Quality Monitoring
+
+Olivier Gaudin, Freddy Mallet, SonarSource, http://www.sonarsource.com
+
+What is Sonar ?
+
+Sonar is an open source platform used by development teams to manage source code quality. Sonar has been developed with a main objective in mind: make code quality management accessible to everyone with minimal effort.
+
+As such, Sonar provides code analyzers, reporting tools, defects hunting modules and TimeMachine as core functionality. But it also embarks a plugin mechanism enabling the community to extend the functionality (more than 35 plugins available), making Sonar the one-stop-shop for source code quality by addressing not only developers but also managers needs.
+
+In terms of languages, Sonar support analysis of Java in the core, but also of Flex (ActionScript 3), PHP, PL/SQL and Cobol through plugins (Open Source or commercial) as the reporting engine is language agnostic.
+
+Since version 2.0, Sonar enables to cover quality on 7 axes and so to report on:
+
+Duplicated code
+Coding standards
+Unit tests(code coverage)
+Complex code
+Potential bugs
+Comments
+Design and architecture
+Sonar can be used for one-off audits, but has been designed to support global continuous improvement strategy on code quality in a company and therefore can be used as a shared central repository for quality management.

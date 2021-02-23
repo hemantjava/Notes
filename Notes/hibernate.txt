@@ -1,0 +1,570 @@
+Transaction management in local:-Programmaic Approach:-
+------------------------------------------------------
+public class Main {
+
+	public static void main(String[] args) {
+		Session session = HibernateUtil.getSessionFactory().openSession();
+		Transaction transaction = null;
+		try {
+		.
+			transaction = session.beginTransaction();
+			Address address1 = new Address("OMR Road", "Chennai", "TN", "600097");
+			Address address2 = new Address("Ring Road", "Banglore", "Karnataka", "560000");
+			Student student1 = new Student("Eswar", address1);
+			Student student2 = new Student("Joe", address2);
+			session.save(address1);
+			session.save(student2);
+			transaction.commit();
+		} catch (HibernateException e) {
+			transaction.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+
+	}
+
+}
+----------------------------------------------------------------------------------
+1). hibernate configuration (*.cfg.xml):- 
+---------------------------------------
+
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<!-- hibernate.cfg.xml -->
+<hibernate-configuration>
+	<session-factory>
+		<!-- connection properties -->
+		<property name="connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
+		<property name="connection.url">jdbc:oracle:thin:@localhost:1521:xe</property>
+		<property name="connection.username">hemant</property>
+		<property name="connection.password">hemant</property>
+		<!-- hibernate properties -->
+		<property name="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</property>
+		<property name="hbm2ddl.auto">update</property>
+		<property name="show_sql">true</property>
+		<!-- show.sql is show the sql querie in command prompt -->
+		<!-- mapping file -->
+		<mapping class="Product" />
+		<!--<mapping resource=""/> if xml based mapping -->
+	</session-factory>
+</hibernate-configuration>
+----------------------------------------------------------
+2)Steps to write client app:-
+       import org.hibernate.Session;
+       import org.hibernate.SessionFactory;
+       import org.hibernate.Transaction;
+       import org.hibernate.cfg.Configuration;
+       //step1
+		Configuration conf=new Configuration();
+			conf.configure("hibernate.cfg.xml");
+		//step2
+		SessionFactory factory=conf.buildSessionFactory();
+		//step3
+		Session session=factory.openSession();
+		//create pojo class object and add the values
+		Product p=new Product();
+		p.setProductId(555);
+		p.setProductName("sheeta");
+		p.setPrice(100);
+		//step4
+		Transaction tx=session.beginTransaction();
+		//step5
+		session.save(p);
+		//step6
+		tx.commit();
+		//step7
+		session.close();
+         //step 8
+		factory.close();
+---------------------------------------------------
+3)Annaotions used in hibernate:-
+ @Entity
+ @Table(name = "products")
+ @Id
+ @Column(name = "pname", length = 10,nullable,unique)
+ @Transient -->to avaid to save data field in table
+ @Temporal -->date type property -->3 types
+     @Temporal(TemporalType.TIME)
+     @Temporal(TemporalType.DATE)
+     @Temporal(TemporalType.TIMESTAMP)	 
+@GeneratedValue -->just after @Id annotation -->4 types
+      @GeneratedValue(strategy=GenerationType.AUTO)
+	  @GeneratedValue(strategy=GenerationType.IDENTITY)
+	  @GeneratedValue(strategy=GenerationType.SEQUENCE)
+	  @GeneratedValue(strategy=GenerationType.TABLE)-->db independance
+@Embeddable -->class level act like embeddable class	
+@Embedded -->to properties and to inform this field is embedded  
+@ElementCollection  -->to define property or column type as collection type and collection data(class) should be embeddable type
+-------------------------------------------------------
+@TableGenerator(
+   name = "Address_Gen", 
+   table = "ID_GEN", 
+   pkColumnName = "GEN_NAME", 
+   valueColumnName = "GEN_VAL", 
+   pkColumnValue = "Addr_Gen", 
+   initialValue = 10000, 
+   allocationSize = 100)
+@Id
+@GeneratedValue(strategy = GenerationType.TABLE, generator = "Address_Gen")
+private long id;
+------------------------------------------------------------------------
+Note: annotations we can annotated properties and getter methods only
+    examples:-
+	
+	@Entity
+    public class PersonDetails {
+	
+	private int personDetailsId;
+	
+	@Id @GeneratedValue	
+	@Column(name="personDetails_PK")
+	public int getPersonDetailsId() {
+    return personDetailsId;
+	}
+	
+	(OR)
+	
+	@Entity
+    public class PersonDetails {
+	
+	@Id @GeneratedValue	
+	@Column(name="personDetails_PK")
+	private int personDetailsId;
+	
+	public int getPersonDetailsId() {
+    return personDetailsId;
+	}
+---------------------------------------------------------------------------
+4)Mapping relationships:-
+------------------------
+ A)One to One Relationship:-
+   Example:-
+   --------
+-------Parent class------   
+package com.hemant.model;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+
+@Entity
+@Table(name="Person_table")
+public class Person {
+
+@Id @GeneratedValue	
+@Column(name="person_PK")
+private int id;
+private String personName;
+
+@OneToOne(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+@JoinColumn(name="personDetails_FK")
+private PersonDetails personDetails;
+
+-----------------------------------------------------------------------------------------
+Person_table(person_PK number(8),personName varchar2(225),personDetails_FK varchar2(225))
+-----------------------------------------------------------------------------------------
+-------child class------ 
+package com.hemant.model;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+
+@Entity
+public class PersonDetails {
+	
+	@Id @GeneratedValue	
+	@Column(name="personDetails_PK")
+	private int personDetailsId;
+	private String zipCode;
+	private String job;
+	private double income;
+	public int getPersonDetailsId() {
+		return personDetailsId;
+	}
+	
+}
+---------------
+DataBaseTable:-
+---------------
+Hibernate: select hibernate_sequence.nextval from dual
+Hibernate: select hibernate_sequence.nextval from dual
+Hibernate: insert into PersonDetails (income, job, zipCode, personDetails_PK) values (?, ?, ?, ?)
+Hibernate: insert into Person (personDetails_FK, personName, personId_PK) values (?, ?, ?)
+------------------------------------------------------------------------------------------
+
+Note:-OneToOne Association has made 2 table and parent table maintaining FK relationship
+-----------------------------------------------------------------------------------------
+
+--------------hibernate.cfg.xml------------------
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<!-- hibernate.cfg.xml -->
+<hibernate-configuration>
+	<session-factory>
+		<!-- connection properties -->
+		<property name="connection.driver_class">oracle.jdbc.driver.OracleDriver</property>
+		<property name="connection.url">jdbc:oracle:thin:@localhost:1521:xe</property>
+		<property name="connection.username">hemant</property>
+		<property name="connection.password">hemant</property>
+		<!-- hibernate properties -->
+		<property name="hibernate.dialect">org.hibernate.dialect.Oracle10gDialect</property>
+		<property name="hibernate.hbm2ddl.auto">create</property>
+		<property name="hibernate.show_sql">true</property>
+		<!-- hibernate mapping resources -->
+		<mapping class="com.hemant.model.Person"/>
+		<mapping class="com.hemant.model.PersonDetails"/>
+	</session-factory>
+</hibernate-configuration>
+---------------------------------------------------------------
+--------------Clienr program-----------------------------------
+----------------------------------------------------------------
+package com.hemant.client;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+import org.hibernate.cfg.Configuration;
+import com.hemant.model.Person;
+import com.hemant.model.PersonDetails;
+
+public class TestPerson {
+
+	public static void main(String[] args) {
+		
+		 Configuration config = new Configuration();
+		 config.configure("hibernate.cfg.xml");
+		 SessionFactory factory = config.buildSessionFactory();
+		 Session session = factory.openSession();
+		 Person p = new Person();
+		 p.setPersonName("hemant");
+		 
+		 PersonDetails pd = new PersonDetails();
+		 pd.setIncome(1233.44);
+		 pd.setJob("developer");
+		 pd.setZipCode("497449");
+		 
+		 p.setPersonDetails(pd);
+		 
+		 Transaction tx = session.beginTransaction();
+		 session.save(p);
+		 tx.commit();
+		 
+
+	}
+
+}
+
+  Note:-By default @OneToOne and @ManyToOne fetch=FetchType.EAGER and @ManyToMany & @OneToMany fetch=FetchType.LAZY
+----------------------------------------------------------------------------------------------------
+difference b/w save and persist methods:-
+ans:-
+    save() method can return that primary key id value which is generated by hibernate and we can see it by
+long s = session.save(k);
+In this same case, persist() will never give any value back to the client  
+  
+------------------------------------------------------------
+                     One-To-Many- annatation							   
+============================================================
+----------------------parent table--------------------------
+
+@Entity
+public class Person {
+// Id generated by default by hibernate
+	@Id
+	@GeneratedValue
+	@Column(name="personId_PK")
+	private int id;
+	private String personName;
+	
+	/*@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER) 
+	 * private Collection<Vehicle> vehicle = new ArrayList<>();
+	 * 
+	 *// Person_Vehicle default table generated by hibernate  maintain the keys
+	 * sql> desc person_vehicle
+	 
+     Name                     Null     Type       
+    ------------------------ -------- ---------- 
+     PERSON_PERSONID_PK       NOT NULL NUMBER(10) 
+     VEHICLE_PERSONDETAILS_PK NOT NULL NUMBER(10) 
+	 --------------------------------------------
+	
+	*/
+	
+	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER) 
+	@JoinTable(name="onetomay_table")
+	private Collection<Vehicle> vehicle = new ArrayList<>();
+	
+	 //Note:- @JoinTable just replacing Person_Vehicle default table name to user defined table name with 
+	 //onetomay_table                                                               
+	
+
+	public Collection<Vehicle> getVehicle() {
+		return vehicle;
+	}				  
+  // setter and getter------
+  
+}
+
+------------------ child table --------------
+@Entity
+public class Vehicle {
+	
+	private int personDetailsId;
+	private String zipCode;
+	private String job;
+	private double income;
+	@Id @GeneratedValue	
+	@Column(name="personDetails_PK")
+//setter and getter------
+}
+
+-----------------------client programm----------
+         Person p = new Person();
+		 p.setPersonName("hemant");
+		 
+		 Vehicle pd = new Vehicle();
+		 pd.setIncome(1233.44);
+		 pd.setJob("developer");
+		 pd.setZipCode("497449");
+		 
+		 Vehicle pd1 = new Vehicle();
+		 pd1.setIncome(1233.44);
+		 pd1.setJob("tester");
+		 pd1.setZipCode("560076");
+		 
+		 p.getVehicle().add(pd);
+		 p.getVehicle().add(pd1);
+		 
+		 Transaction tx = session.beginTransaction();
+		 session.save(p);
+		 session.save(pd);
+		 session.save(pd1);
+		 tx.commit();	
+-----------------------------------------------------------------------
+Database:- 3 tables are created 3rd one maintaining relationship(keys)
+-----------------------------------------------------------------------
+Hibernate: select hibernate_sequence.nextval from dual  --> person
+Hibernate: select hibernate_sequence.nextval from dual  --> Vehicle
+Hibernate: select hibernate_sequence.nextval from dual  --> Vehicle
+Hibernate: insert into Person (personName, personId_PK) values (?, ?)
+Hibernate: insert into Vehicle (income, job, zipCode, personDetails_PK) values (?, ?, ?, ?)
+Hibernate: insert into Vehicle (income, job, zipCode, personDetails_PK) values (?, ?, ?, ?)
+Hibernate: insert into onetomay_table (Person_personId_PK, vehicle_personDetails_PK) values (?, ?)
+Hibernate: insert into onetomay_table (Person_personId_PK, vehicle_personDetails_PK) values (?, ?)
+----------------------------------------------------------------------
+                  Many-to-one-annotation
+======================================================================
+Student.java (many)
+Address.java (one)
+hibernate.cfg.xml
+ForOurLogic.java
+
+  eg:-Multiple Student mapped into single Address
+  
+-------------------Student-----------------  
+@Entity
+@Table(name = "STUDENT")
+public class Student {
+	@Id
+	@GeneratedValue
+	@Column(name = "STUDENT_ID")
+	private long studentId;
+	private String studentName;
+	@ManyToOne(cascade = CascadeType.ALL)
+	private Address studentAddress; 
+----setter and getter------  
+  
+-------------------Address--------------------  
+@Entity
+@Table(name = "ADDRESS")
+public class Address {
+	@Id
+	@GeneratedValue
+	@Column(name = "ADDRESS_ID")
+	private long addressId;
+	private String street;
+	private String city;
+	private String state;
+	private String zipcode;
+ ----setter and getter------
+}
+------------------Client-----------------------
+session.save(student1);
+session.save(student2);
+----------------------------------------------------------
+DataBase Tables:- In M2O relationship 2 tables are created:-
+----------------------------------------------------------
+Hibernate: select hibernate_sequence.nextval from dual
+Hibernate: select hibernate_sequence.nextval from dual
+Hibernate: select hibernate_sequence.nextval from dual
+Hibernate: insert into ADDRESS (city, state, street, zipcode, ADDRESS_ID) values (?, ?, ?, ?, ?)
+Hibernate: insert into STUDENT (studentAddress_ADDRESS_ID, studentName, STUDENT_ID) values (?, ?, ?)
+Hibernate: insert into STUDENT (studentAddress_ADDRESS_ID, studentName, STUDENT_ID) values (?, ?, ?)	         
+----------------------------------------------------------------------------------------------------
+ManyToMany:- three tables are created .
+-----------
+@ManyToMany(cascade= {CascadeType.PERSIST,CascadeType.MERGE,CascadeType.DETACH,CascadeType.REFRESH},fetch=FetchType.LAZY)
+	@JoinTable(
+			name="course_student",
+			joinColumns=@JoinColumn(name="course_id"),
+			inverseJoinColumns=@JoinColumn(name="student_id")
+			)
+	private List<Student> listStuds;
+	
+	
+	
+Embbabated class:-
+--------------------
+
+@Embeddable
+public class Address {
+
+}
+
+@Entity
+@Table(name = "products_default")
+public class Product implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
+    @Embedded
+    private Address address;
+    
+    @Embedded
+    @AttributeOverrides({
+    	@AttributeOverride(name="street" , column=@Column(name="off_street")),
+    	@AttributeOverride(name="pincode" , column=@Column(name="off_picode")),
+    	@AttributeOverride(name="state" , column=@Column(name="off_state"))
+    })
+}
+Note:- if Address clsass defined 2 time or more then one the we have to use @AttributeOverrides and @AttributeOverride 
+       annotation to avaiod ambiguty of table columns name.
+----------------------------------------------------------
+  @ElementCollection
+_-----------------------------------
+create separate table and store there addresses as records by making foreign key of product class id.  
+------------------------------------------------------------------------------------------------------
+In your code you should make the following update:Hibernate 5.2
+
+Replace
+session.createQuery("from Student").list()
+With
+session.createQuery("from Student").getResultList()
+---------------------------------------------------------
+
+JPA Cascade Types
+===================
+The cascade types supported by the Java Persistence Architecture are 6 as below:
+
+CascadeType.PERSIST : 
+cascade type presist means that save() or persist() operations cascade to related entities.
+CascadeType.MERGE : 
+cascade type merge means that related entities are merged when the owning entity is merged.
+CascadeType.REFRESH :
+cascade type refresh does the same thing for the refresh() operation.
+CascadeType.REMOVE :
+cascade type remove removes all related entities association with this setting when the owning entity is deleted.
+CascadeType.DETACH :
+cascade type detach detaches all related entities if a “manual detach” occurs.
+CascadeType.ALL : 
+cascade type all is shorthand for all of the above cascade operations
+  ---------------------------------------------------------------------------------------
+  
+  Spring boot with hibernate 5.2 configuration:-
+  ============================================
+  
+  
+@Configuration
+@EnableTransactionManagement
+public class HibernateConfig {
+ 
+    @Autowired
+    private Environment env; 
+ 
+    @Bean
+    public DataSource dataSource() {
+        DriverManagerDataSource  ds = new DriverManagerDataSource ();
+        ds.setDriverClassName(env.getProperty("datasource.driver-class-name"));
+        ds.setUrl(env.getProperty("datasource.url"));
+        ds.setUsername(env.getProperty("datasource.username"));
+        ds.setPassword(env.getProperty("datasource.password"));
+ 
+        return ds;
+    }
+	
+    @Bean
+    public LocalSessionFactoryBean sessionFactory() {
+        LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+        sessionFactory.setDataSource(dataSource());
+        sessionFactory.setPackagesToScan(env.getProperty("packagesToScan"));
+        sessionFactory.setHibernateProperties(hibernateProperties());
+ 
+        return sessionFactory;
+    }
+    private final Properties hibernateProperties() {
+        Properties hibernate = new Properties();
+        hibernate.setProperty("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
+        hibernate.setProperty("hibernate.dialect", env.getProperty("hibernate.dialect"));
+        hibernate.setProperty("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
+ 
+        return hibernate;
+    }
+    @Bean
+    public HibernateTransactionManager transactionManager() {
+        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
+        transactionManager.setSessionFactory(sessionFactory().getObject());
+        return transactionManager;
+    }
+	
+	 @Bean
+    public HibernateTemplate getHibernatetemple() {
+    	HibernateTemplate tmplate = new HibernateTemplate() ;
+    	tmplate.setSessionFactory(sessionFactory().getObject());
+    	return tmplate;
+    }
+ 
+}
+-------------------------------------------------------------------------------------------
+But what if we only want to cascade only save operations but not delete operation. Then we need to clearly specify it using below code.
+
+@OneToMany(cascade=CascadeType.PERSIST, fetch = FetchType.LAZY)
+@JoinColumn(name="EMPLOYEE_ID")
+private Set<AccountEntity> accounts;
+
+-------------------------------------------------------------------------------------------------
+Id Generators:-
+--------------
+1.Auto(default) internally generate hibrenate_sequence like next_value
+
+	@Id
+	@Column(name="employee_id")
+	@GeneratedValue(strategy=GenerationType.Auto,generator="empid_generator")
+	@SequenceGenerator(name = "empid_generator",initialValue=100,allocationSize=1,sequenceName="empid_seq")
+	private Integer employeeId;
+	
+2.Identity
+
+3.Sequence	
+	
+	@Id
+	@Column(name="employee_id")
+	@GeneratedValue(strategy=GenerationType.SEQUENCE,generator="empid_generator")
+	@SequenceGenerator(name = "empid_generator",initialValue=100,allocationSize=1,sequenceName="empid_seq")
+	private Integer employeeId;
+	
+	
+4.Table	 (common for every database database independent)
+	@Id
+	@Column(name="employee_id")
+	@GeneratedValue(strategy=GenerationType.TABLE,generator="empid_generator")
+	@TableGenerator(name = "empid_generator",initialValue=1,allocationSize=1,table="empid_seq")
+	private Integer employeeId;
+	
+-----------------------------------------------------------------------	

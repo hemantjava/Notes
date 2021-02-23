@@ -1,0 +1,516 @@
+===========Spring============
+1)DispatcherServlet of Spring MVC - 10 things Java Developer should know
+ what is a DispatcherServlet?
+ It is responsible for request handling by delegating requests to additional components of Spring MVC e.g. actual controller classes i.e.
+ those which are annotated using @Controller or @RestController (in case of RESTful Web Services), Views, View Resolvers, handler mappers etc.
+  
+  In case of RESTful web services, it is also responsible for finding the correct message converter to convert the response into the format client is expecting e.g. JSON, XML, or TEXT.
+  For example, if a client is expecting JSON then it will use the MappingJacksonHttpMessageConverter or MappingJackson2HttpMessageConverter (depending upon whether Jackson 1 or Jackson 2 is available in Classpath) to convert the response returned by convert into a JSON string.
+  The DispatcherServlet uses HandlerMapping implementations - pre-built or provided as part of the application to route incoming requests to handler objects. By default, it uses BeanNameUrlHandlerMapping and DefaultAnnotationHandlerMapping, which is driven using @RequestMapping annotation.
+  
+  @RequestMapping annotation can map the request by path e.g. 
+    1)@RequestMapping(“path”), by HTTP method e.g. 
+	2)@RequestMapping("path", method=RequestMethod.GET), by request parameters e.g. 
+	3)@RequestMapping("path"”, method=RequestMethod.POST, params="param1",value="/topics") and by presence of HTTP request header e.g.
+	4)@RequestMapping("path", header="content-type=text/*")
+	
+  @GetMapping ==  @RequestMapping + method=RequestMethod.GET.
+  @PostMapping("/topics") ==  @RequestMapping(method=RequestMethod.POST,value="/topics")  
+  @RestController -->org.spring.framework.web.bind.annotation.RestController
+  @PathVariable  -->indicate value is coming as path variable	
+
+NOTE:-You can also apply @RequestMapping annotation at the class level to filter incoming requests.
+    The view resolution strategy can be specified using a ViewResolver implementation, by default, DispatcherServlet uses InternalResourceViewResolver to convert logical view name to actual View object e.g. a JSP.
+
+
+10 Points about DispatcherServlet
+---------------------------------
+
+i) The DispatcherServlet is the main(front) controller of Spring MVC Application. All incoming web request passes through DispatcherServlet before processed by individual Spring controllers i.e classes annotated using @Controller annotation.
+
+ii) The DispatcherServlet of Spring MVC is an Implementation of Front Controller Pattern . A Front Controller is nothing but a controller that handles all requests for a website. They are often used in Web applications to implement workflows.
+
+iii) Like any other Servlet, DispatcherServlet of Spring MVC framework is also declared and configured in web.xml file as shown below:
+
+<web-app>
+
+<servlet>
+<servlet-name>SpringMVC</servlet-name>
+<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+<load-on-startup>1</load-on-startup>
+</servlet>
+
+<servlet-mapping>
+<servlet-name>SpringMVC</servlet-name>
+<url-pattern>*</url-pattern>
+</servlet-mapping>
+
+</web-app>
+
+iv) The DispatcherServlet is an actual Servlet, it inherits from the HttpServlet base class. Servlet engine like Tomcat create an instance of this class and calls it various life-cycle methods e.g. init(), service() and destroy().	
+
+v) The DispatcherServlet provides a Single point of entry for your Spring MVC web application. As I said before, it handles all incoming requests.  See how Spring MVC works internally for more details of the inner workings of Spring.
+
+
+vi) Spring's DispatcherServlet is also completely integrated with the Spring IoC container and as such allows you to use every feature of Spring framework e.g. dependency injection.
+
+
+vii) The dispatcher servlet is configured as load-on-startup = 1 which means this Servlet should be created by Servlet container when you deploy the application rather than creating when a request arrived for this request. This is done to reduce the response time of the first request because DispatcherServlet does a lot of job at the startup to scan and find all controllers and request mappings. See Java Web Fundamentals By Kevin Jones to learn more about load-on-startup and other servlet fundamentals.
+
+
+viii) During initialization of DispatcherServlet, the Spring MVC framework will look for a file named [servlet-name]-servlet.xml in the WEB-INF directory of your web application and create the beans defined there e.g. if servlet name is "SpringMVC" as shown in the above web.xml configuration then it will look for a file named SpringMVC-Servlet.xml. It also overrides the definitions of any beans defined with the same name in the global scope. You can change the exact location of this configuration file by using contextConfigLocation servlet initialization parameter.
+
+ix) In the Spring MVC framework, each DispatcherServlet has its own WebApplicationContext (see Spring in Action), which inherits all the beans already defined in the root WebApplicationContext. These inherited beans can be overridden in the servlet-specific scope, and new scope-specific beans can be defined locally to a given servlet instance.
+
+x) The DispatcherServlet of Spring MVC framework can also return the last-modification-date, as specified by the Servlet API. It determines the last modification date by looking for an appropriate handler mapping and test if the handler that is found implements the LastModified interface. If yes, then it calls the getLastModified(request) method of the LastModified interface and value is returned to the client.
+
+---------------------------------------------------------------------
+?)way of loading spring configuration files
+----------------------------------------------------------
+there are three approaches:-
+1)servlet name eg: name-servlet.xml(default)
+2)init-param1
+3)context-param1
+
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+                            http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+
+    <display-name>Spring Web Application example</display-name>
+
+    <!-- Configurations for the root application context (parent context) -->
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>
+            /WEB-INF/spring/jdbc/spring-jdbc.xml <!-- JDBC related context -->
+            /WEB-INF/spring/security/spring-security-context.xml <!-- Spring Security related context -->
+        </param-value>
+    </context-param>
+
+    <!-- Configurations for the DispatcherServlet application context (child context) -->
+    <servlet>
+        <servlet-name>spring-mvc</servlet-name>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+        <init-param>
+            <param-name>contextConfigLocation</param-name>
+            <param-value>
+                /WEB-INF/spring/mvc/spring-mvc-servlet.xml
+            </param-value>
+        </init-param>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>spring-mvc</servlet-name>
+        <url-pattern>/admin/*</url-pattern>
+    </servlet-mapping>
+
+</web-app>
+----------------------------------------
+Best approach:-
+--------------
+ans:- applicationContext.xml import resource
+Your other option is to just add your primary applicationContext.xml to the web.xml and then use import statements in that primary context.
+In applicationContext.xml you might have…
+
+  <!-- hibernate configuration and mappings -->
+  <import resource="applicationContext-hibernate.xml"/>
+
+  <!-- ldap -->
+  <import resource="applicationContext-ldap.xml"/>
+
+  <!-- aspects -->
+  <import resource="applicationContext-aspects.xml"/>
+---------------------------------------------------------------------
+
+JdbcTemplate Class
+-----------------------
+The JDBC Template class executes SQL queries, updates statements, stores procedure calls,
+Instances of the JdbcTemplate class are threadsafe once configured. So you can configure a single instance of a JdbcTemplate and then safely inject this shared reference into multiple DA.
+
+Executing SQL statements:-
+
+Let us see how we can perform CRUD (Create, Read, Update and Delete) operation on database tables using SQL and JDBC Template object.
+
+Querying for an integer:-
+String SQL = "select count(*) from Student";
+int rowCount = jdbcTemplateObject.queryForInt( SQL );
+
+Querying for a long:-
+String SQL = "select count(*) from Student";
+long rowCount = jdbcTemplateObject.queryForLong( SQL );
+
+A simple query using a bind variable:-
+String SQL = "select age from Student where id = ?";
+int age = jdbcTemplateObject.queryForInt(SQL, new Object[]{10});
+
+Querying for a String:-
+String SQL = "select name from Student where id = ?";
+String name = jdbcTemplateObject.queryForObject(SQL, new Object[]{10}, String.class);
+//String.class arg defined return type of queryForObject()
+
+(IMP)Querying and returning an object:-
+String SQL = "select * from Student where id = ?";
+Student student = jdbcTemplateObject.queryForObject(
+   SQL, new Object[]{10}, new StudentMapper());
+
+public class StudentMapper implements RowMapper<Student> {
+   public Student mapRow(ResultSet rs, int rowNum) throws SQLException {
+      Student student = new Student();
+      student.setID(rs.getInt("id"));
+      student.setName(rs.getString("name"));
+      student.setAge(rs.getInt("age"));
+      
+      return student;
+   }
+}
+
+Querying and returning multiple objects:-
+----------------------------------------
+String SQL = "select * from Student";
+List<Student> students = jdbcTemplateObject.query(
+   SQL, new StudentMapper());
+   
+                OR
+public List<Student> getCollegeList() {
+		List<Student> student = jdbcTemplate.query("select * from Student",new BeanPropertyRowMapper<Student>(),Student.class);
+		return student;
+		
+	}				
+
+
+Note:we can get the data using ResultSet by indexing and column name
+
+
+Inserting a row into the table:-
+----------------------------------
+String SQL = "insert into Student (name, age) values (?, ?)";
+jdbcTemplateObject.update( SQL, new Object[]{"Zara", 11} );
+
+Updating a row into the table:-
+------------------------------
+String SQL = "update Student set name = ? where id = ?";
+jdbcTemplateObject.update( SQL, new Object[]{"Zara", 10} );
+
+Deleting a row from the table:-
+--------------------------------
+String SQL = "delete Student where id = ?";
+jdbcTemplateObject.update( SQL, new Object[]{20} );
+
+Executing DDL Statements:-
+------------------------------
+You can use the execute(..) method from jdbcTemplate to execute any SQL statements or DDL statements.
+ Following is an example to use CREATE statement to create a table −
+
+String SQL = "CREATE TABLE Student( " +
+   "ID   INT NOT NULL AUTO_INCREMENT, " +
+   "NAME VARCHAR(20) NOT NULL, " +
+   "AGE  INT NOT NULL, " +
+   "PRIMARY KEY (ID));"
+
+jdbcTemplateObject.execute( SQL );
+--------------------------------------------------------------------------------
+
+JPA(java persistence api):- we are using EntityManager(i) like JdbcTemplare and hibernateTemplate
+template:-
+         @PersistenceContex
+          EntityManager
+
+Spring Data :-
+------------
+    Spring data provides abstract later between our application and JpaRepository
+	it has two main interfaces for data persistence operation
+	 1. CrudRepository
+	 2. JpaRepository
+
+(org.springframework.data.repository.CrudRepository):-
+------------------------------------------------------------------
+Note:-CrudRepository(interface having 11 abstract methods)
+
+import org.springframework.data.repository.CrudRepository;
+
+@Repository
+public class StudentRepository implements CrudRepository<Student, Integer> {
+
+	@Override
+	public long count() {
+		return 0;
+	}
+
+	@Override
+	public void delete(Integer arg0) {
+
+	}
+
+	@Override
+	public void delete(Student arg0) {
+
+	}
+
+	@Override
+	public void delete(Iterable<? extends Student> arg0) {
+	}
+
+	@Override
+	public void deleteAll() {
+
+	}
+
+	@Override
+	public boolean exists(Integer arg0) {
+		return false;
+	}
+
+	@Override
+	public Iterable<Student> findAll() {
+		return null;
+	}
+
+	@Override
+	public Iterable<Student> findAll(Iterable<Integer> arg0) {
+		return null;
+	}
+
+	@Override
+	public Student findOne(Integer arg0) {
+	
+		return null;
+	}
+
+	@Override
+	public <S extends Student> S save(S arg0) {
+		
+		return null;
+	}
+
+	@Override
+	public <S extends Student> Iterable<S> save(Iterable<S> arg0) {
+		
+		return null;
+	}
+
+}
+---------------------------------------------------------------------------------------
+
+Spring Data (org.springframework.data.jpa.repository.JpaRepository):-
+------------------------------------------------------------------
+
+import java.util.List;
+
+import org.springframework.data.domain.Example;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.hemant.db.DataBaseOpreration.model.Student;
+
+@Repository
+public class StudentJpaRepository implements JpaRepository<Student, Integer>{
+
+	@Override
+	public Page<Student> findAll(Pageable arg0) {
+	
+		return null;
+	}
+
+	@Override
+	public long count() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public void delete(Integer arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(Student arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void delete(Iterable<? extends Student> arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteAll() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean exists(Integer arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public Student findOne(Integer arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <S extends Student> S save(S arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <S extends Student> long count(Example<S> arg0) {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public <S extends Student> boolean exists(Example<S> arg0) {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public <S extends Student> Page<S> findAll(Example<S> arg0, Pageable arg1) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public <S extends Student> S findOne(Example<S> arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void deleteAllInBatch() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void deleteInBatch(Iterable<Student> arg0) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public List<Student> findAll() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Student> findAll(Sort arg0) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<Student> findAll(Iterable<Integer> arg0) {
+		
+		return null;
+	}
+
+	@Override
+	public <S extends Student> List<S> findAll(Example<S> arg0) {
+		
+		return null;
+	}
+
+	@Override
+	public <S extends Student> List<S> findAll(Example<S> arg0, Sort arg1) {
+		
+		return null;
+	}
+
+	@Override
+	public void flush() {
+		
+		
+	}
+
+	@Override
+	public Student getOne(Integer arg0) {
+		
+		return null;
+	}
+
+	@Override
+	public <S extends Student> List<S> save(Iterable<S> arg0) {
+		
+		return null;
+	}
+
+	@Override
+	public <S extends Student> S saveAndFlush(S arg0) {
+		
+		return null;
+	}
+
+}
+---------------------------------------------------------------------------------------------
+Spring Form Data:-
+--------------------
+1.HTML:-
+-------
+<form:form action="saveCustomer" modelAttribute="customer" method="POST">
+		
+			<table>
+				<tbody>
+					<tr>
+						<td><label>First name:</label></td>
+						<td><form:input path="firstName" /></td>
+					</tr>
+				
+					<tr>
+						<td><label>Last name:</label></td>
+						<td><form:input path="lastName" /></td>
+					</tr>
+
+					<tr>
+						<td><label>Email:</label></td>
+						<td><form:input path="email" /></td>
+					</tr>
+
+					<tr>
+						<td><label></label></td>
+						<td><input type="submit" value="Save" class="save" /></td>
+					</tr>
+
+				
+				</tbody>
+			</table>
+		
+		
+		</form:form>
+2.POJO:-
+-------
+public class Customer {
+
+	@Id
+	@GeneratedValue(strategy=GenerationType.IDENTITY)
+	@Column(name="id")
+	private int id;
+	
+	@Column(name="first_name")
+	private String firstName;
+	
+	@Column(name="last_name")
+	private String lastName;
+	
+	@Column(name="email")
+	private String email;
+	
+	public Customer() {
+		
+	}
+-------------------------------------------------------------------------------------------------------------
+		

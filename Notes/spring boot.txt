@@ -1,0 +1,173 @@
+1)Ways of creating spring boot application:-
+ans:- 3 ways of creating spring boot applications-
+     i)by using STS IDE
+	 ii)by using spring boot CLI
+	 iii)by using http://start.spring.io(initializer)
+
+2)Bsic annotations and classes in spring boot :-
+   @SpringBootApplication --->org.springframework.boot.autoconfigure.SpringBootApplication;
+    SpringApplication --->org.springframework.boot.SpringApplication;
+	                     static ConfigurableApplicationContext run(Object source, String... args)
+  
+example:-
+--------
+    public class ServletInitializer extends SpringBootServletInitializer {
+
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		return application.sources(HelloWorldApplication.class);
+	}
+	}
+	
+3)Testing our application:-
+
+@RunWith(SpringRunner.class)
+@SpringBootTest
+@Import(MyTestsConfiguration.class)
+public class MyTests {
+
+    @Test
+    public void exampleTest() {
+        ...
+    }
+
+}	
+---------------------------------------------------------------------------------------------------
+
+---------------------------------------
+2)Spring boot test class configuration:--
+----------------------------------------
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest
+------------------
+@MockBean
+
+@RunWith(SpringRunner.class)
+@WebMvcTest(EmployeeRestController.class) //if we test controller class
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+Complete testing follow below url:-
+https://docs.spring.io/spring-boot/docs/current/reference/html/boot-features-testing.html
+
+                AND
+				
+package mocktest.com.iri.msd.unit.test;
+
+import static org.mockito.BDDMockito.given;
+
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.Mockito;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.util.Assert;
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest
+public class TestToolDefineAttribute {
+
+	@MockBean
+	private GroupingRepository  groupingRepo;
+
+	@Autowired
+	private LoadGridServiceHelper  gridServiceHelper ;
+	
+	@MockBean
+	private GridDataTransformer transformer;
+
+	@MockBean
+	private MetadataGenerator metadataGenerator;
+
+Expectation:-
+-------------	
+given(groupingRepo.getToolDefineAttrDetails(Mockito.anyMap())).willReturn(categoryList);	
+
+===================================================================
+4)look at the log levels and messages in log 4j in decreasing order of their priority:
+This log4j level gives more detailed information than any other level in the hierarchy. ...
+
+TRACE Level. 
+DEBUG Level. ...
+INFO Level. ...
+WARN Level. ...
+ERROR Level. ...
+FATAL Level. ...
+ALL Level. ...
+OFF Level.
+-------------------------
+Commonds run spring apps:-
+1)mvn spring-boot:run
+2)mvn dependency:tree
+	
+-----------------------------------------------------------------------
+Scheduling:-
+==========
+@EnableScheduling
+@Scheduled(initialDelay = 1000, fixedRate = 10000)
+@Scheduled(cron = "* * * * * *")
+
+
+Examples:-
+Below you can find the example patterns from the spring forum:
+
+* "0 0 * * * *" = the top of every hour of every day.
+* "*/10 * * * * *" = every ten seconds.
+* "0 0 8-10 * * *" = 8, 9 and 10 o'clock of every day.
+* "0 0 8,10 * * *" = 8 and 10 o'clock of every day.
+* "0 0/30 8-10 * * *" = 8:00, 8:30, 9:00, 9:30 and 10 o'clock every day.
+* "0 0 9-17 * * MON-FRI" = on the hour nine-to-five weekdays
+* "0 0 0 25 12 ?" = every Christmas Day at midnight
+"*/5 * * * * MON-FRI" = every 5 seconds that should execute on weekdays only
+Cron expression is represented by six fields:
+=========================================================
+second, minute, hour, day of month, month, day(s) of week
+=========================================================
+(*) means match any
+
+*/X means "every X"
+
+? ("no specific value") 
+------------------------------------------------------
+
+Spring Boot - Interceptor:-
+==========================
+You can use the Interceptor in Spring Boot to perform operations under the following situations −
+
+1)Before sending the request to the controller
+2)Before sending the response to the client.
+
+To work with interceptor, you need to create @Component class that supports it and it should implement the "HandlerInterceptor" interface.
+
+The following are the three methods you should know about while working on Interceptors −
+
+1)preHandle() method − This is used to perform operations before sending the request to the controller. This method should return true to return the response to the client.
+2)postHandle() method − This is used to perform operations before sending the response to the client.
+3)afterCompletion() method − This is used to perform operations after completing the request and response.
+
+You will have to register this Interceptor with InterceptorRegistry by using WebMvcConfigurerAdapter as shown below −
+
+@Component
+public class ProductServiceInterceptorAppConfig extends WebMvcConfigurerAdapter {
+   @Autowired
+   ProductServiceInterceptor productServiceInterceptor;
+
+   @Override
+   public void addInterceptors(InterceptorRegistry registry) {
+      registry.addInterceptor(productServiceInterceptor);
+   }
+}
+-------------------------------------------------------------
+<!-- https://mvnrepository.com/artifact/com.netflix.netflix-commons/netflix-eventbus -->
+		<dependency>
+			<groupId>com.netflix.netflix-commons</groupId>
+			<artifactId>netflix-eventbus</artifactId>
+			<version>0.1.2</version>
+			<scope>runtime</scope>
+		</dependency>
+
+-------------------------------------------------------------------------------

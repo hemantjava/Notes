@@ -1,0 +1,206 @@
+UserDefined Exception:-
+-------------------------------------------------------
+Note:- 5 constructors in exception class:-
+------------------------------------------------------
+public class java.lang.Exception extends java.lang.Throwable {
+  static final long serialVersionUID;
+ 1) public java.lang.Exception();
+ 2) public java.lang.Exception(java.lang.String);
+ 3) public java.lang.Exception(java.lang.String, java.lang.Throwable);
+ 4) public java.lang.Exception(java.lang.Throwable);
+ 5) protected java.lang.Exception(java.lang.String, java.lang.Throwable, boolean, boolean);
+}
+------------------------------------------------------------------------------------------
+List of exceptions classes in our projects:-
+------------------------------------------
+1.DSAReportException
+2.DSException
+3.DsaPersistenceException
+4.FileUploadException
+5.DsaRuntimeException
+---------------------
+
+(1).
+/** © Gordon Food Service, Inc. All Rights Reserved. */
+package com.gfs.dsa.api.exception;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class DsaPersistenceException extends Exception {
+
+    private static final long serialVersionUID = 1L;
+    private final List<Throwable> exceptionList = new ArrayList<Throwable>();
+
+    public DsaPersistenceException() {
+        // the constructor executed to prevent instantiated of the Class
+    }
+
+    public DsaPersistenceException(final Throwable exception) {
+        exceptionList.add(exception);
+    }
+
+    public void add(final Throwable exception) {
+        exceptionList.add(exception);
+    }
+
+    public List<Throwable> getExceptionList() {
+        return exceptionList;
+    }
+
+    public boolean hasExceptions() {
+        return exceptionList.isEmpty() ? false : true;
+    }
+
+}
+
+(2).
+/** © Gordon Food Service, Inc. All Rights Reserved. */
+package com.gfs.dsa.api.exception;
+
+public class FileUploadException extends Exception {
+
+    private static final long serialVersionUID = 1L;
+
+    public FileUploadException(final String message) {
+        super(message);
+    }
+
+    public FileUploadException(final String message, final Throwable throwalble) {
+        super(message, throwalble);
+    }
+
+}
+
+(3).
+/** © Gordon Food Service, Inc. All Rights Reserved. */
+package com.gfs.dsa.api.exception;
+
+public class DsaException extends Exception {
+
+    private static final long serialVersionUID = 1L;
+    private final transient Object errorObject;
+
+    public DsaException(final String message, final Object object) {
+        super(message);
+        errorObject = object;
+    }
+
+    public DsaException(final Exception exception, final Object errorObj) {
+        super(exception);
+        errorObject = errorObj;
+    }
+
+    public DsaException(final String message, final Exception exception, final Object object) {
+        super(message, exception);
+        errorObject = object;
+    }
+
+    public Object getObject() {
+        return errorObject;
+    }
+}
+(4).
+package com.gfs.dsa.api.exception;
+
+public class DsaRuntimeException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
+
+    public DsaRuntimeException(final String message) {
+        super(message);
+    }
+
+    public DsaRuntimeException(final Exception e) {
+        super(e);
+    }
+
+    public DsaRuntimeException(final String message, final Throwable throwalble) {
+        super(message, throwalble);
+    }
+
+}
+(5).
+package com.gfs.dsa.api.exception;
+
+public class DSAReportException extends Exception {
+
+    private static final long serialVersionUID = 1L;
+
+    public DSAReportException(final String message) {
+        super(message);
+    }
+
+    public DSAReportException(final String message, final Throwable throwalble) {
+        super(message, throwalble);
+    }
+
+}
+
+
+------------------------------------------------------------
+Dependencies for override equals(),hashCode() and toString():-
+--------------------------------------------------------------
+<!-- https://mvnrepository.com/artifact/org.apache.commons/commons-lang3 -->
+<dependency>
+    <groupId>org.apache.commons</groupId>
+    <artifactId>commons-lang3</artifactId>
+    <version>3.7</version>
+</dependency>
+---------------------------------------------------
+1). org.apache.commons.lang.builder.EqualsBuilder;
+2). org.apache.commons.lang.builder.HashCodeBuilder;
+3). org.apache.commons.lang.builder.ToStringBuilder;
+
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj instanceof DriverBonus) {
+
+            final DriverBonus that = (DriverBonus) obj;
+            return new EqualsBuilder().append(driverBonusId, that.driverBonusId)
+                                      .append(bonusTypeName, that.bonusTypeName)
+                                      .append(fiscalYearId, that.fiscalYearId)
+                                      .append(fiscalQuarterId, that.fiscalQuarterId).isEquals();
+        }
+        return false;
+    }
+
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(driverBonusId).append(bonusTypeName).append(fiscalYearId)
+                                    .append(fiscalQuarterId).toHashCode();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this).append("driverBonusId", driverBonusId) //$NON-NLS-1$
+                                        .append("bonusTypeName", bonusTypeName) //$NON-NLS-1$
+                                        .append("fiscalYearId", fiscalYearId) //$NON-NLS-1$
+                                        .append("fiscalQuarterId", fiscalQuarterId)//$NON-NLS-1$
+                                        .toString();
+    }
+	
+	
+---------------------------------------------------------------------------------------------------------------
+--------------------------Log4j Configuration--------------------------------
+-----------------------------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
+
+<!-- Note: This configuration is used for running locally and for automated testing. It will be replaced by the version that
+    resides in dsaWebResources. -->
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+    <appender name="console" class="org.apache.log4j.ConsoleAppender">
+        <layout class="org.apache.log4j.PatternLayout">
+            <param name="ConversionPattern" value="%d{yyyy-MM-dd HH:mm:ss} [%t] %-5p [%c] - %m%n" />
+        </layout>
+    </appender>
+
+    <root>
+        <priority value="INFO" />
+        <appender-ref ref="console" />
+    </root>
+</log4j:configuration>
+---------------------------------------------

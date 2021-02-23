@@ -1,0 +1,89 @@
+
+Lock:-
+-----
+it has introduced in jdk 1.5 version in java.util.concurrent.locks package . it is alternative option of
+synchronized keywords .
+
+
+import java.util.concurrent.locks.Lock(i)
+import java.util.concurrent.locks.ReentrantLock(c)
+imp methods in Lock:-
+--------------------
+1) void lock()
+2) void unlock()
+3) boolean tryLock()  -->if lock is not available it will continue execution of remaining part of program.
+4) boolean tryLock(long l, TimeUnit t); 
+5) void lockInterruptibly()
+
+other methods:-
+--------------
+1) boolean isLocked()
+2) boolean isFair()
+3) int getHoldCount()
+
+ReentrantLock class constructors:-
+---------------------------------
+ ReentrantLock() default
+ ReentrantLock(boolean fairness)
+ ------------------------------------------------------------------------------
+ 
+ Thread Pools(Executor Framework):-
+ ---------------------------------
+    creating new thread for every job may create memory problem , to overcome this
+	we should go for thread pool. its pool of ready threads. to ready  do our job.
+	java 1.5 version introduces thread pool framework to implements thread pool.
+	thread pool frame works, also known as executor frame works .
+	
+Way to create thread pool:-
+--------------------------	
+import java.util.concurrent.ExecutorService;(jdk 5)
+import java.util.concurrent.Executors;(jdk 5)
+
+	   ExecutorService service = Executors.newFixedThreadPool(5);
+	   Future service.submit(Object);
+	   void service.shutdown();
+	   
+Note:- while developing web/application server we can use ThreadPool concept
+note:-generally thread pool size is 60 in server.	
+
+
+There are various thread pools in java:-
+---------------------------------------
+
+2) Cached Thread Pool : A thread pool that creates as many threads it needs to execute the task in parrallel. The old available threads will be reused for the new tasks. If a thread is not used during 60 seconds, it will be terminated and removed from the pool. Method : Executors.newCachedThreadPool()
+
+3)Fixed Thread Pool : A thread pool with a fixed number of threads. If a thread is not available for the task, the task is put in queue waiting for an other task to ends. Method : Executors.newFixedThreadPool()
+
+4) Scheduled Thread Pool : A thread pool made to schedule future task. Method : Executors.newScheduledThreadPool()
+
+1) Single Thread Executor : A thread pool with only one thread. So all the submitted tasks will be executed sequentially. Method : Executors.newSingleThreadExecutor()
+
+5) Single Thread Scheduled Pool : A thread pool with only one thread to schedule future task. Method : Executors.newSingleThreadScheduledExecutor()
+--------------------------------------------------------------
+Difference b/w Callable(jdk 5) and Runnable Interface:-
+-----------------------------------------------
+after competing their job thread returning to the caller where as Runnable won't.
+
+Callable            Runnable
+Object call()       void run()
+
+-----------------------------------------
+Future(i) java.util.concurrent(package):-(jdk 5)
+------------------------------------------
+                     Future hold return value. which is return by the thread.
+					 future.get()-->return hold value.
+--------------------------------------------------------------
+LocalThread:-(jdk 1.0):-thread specific local variable.
+--------------------------------------------------
+LocalThread class provide Local variables,maintenance values per thread basis
+each locaThread object maintain a separated  value like:- userId,transactionId .
+each thread access that object.
+
+Note:-every thread maintain separate copy.
+
+methods:-
+----------
+1)Object get()
+2)Object intialValue()--->null
+3)void set(Object newValue)
+4)void remove()-->newly added jdk1.5 version

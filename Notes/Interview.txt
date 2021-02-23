@@ -1,0 +1,457 @@
+-:INTERVIEW QUESTIONNS AND ANSERS:-
+--------------------------------
+KPIT:-
+-----
+1)jsp flow control?
+ans:-web.xml->url-pattern->servlet-name->register jsp execution(convert into equivalent servlet class then complite the execute)
+2)what is jstl and their type and give some name of core tags?
+ans:-jstl remove complete java code from jsp page and gives xml syntax for that.
+     basically 5 types of jstl tags:-
+	 1)core  --><c:--> ex: out,set,choose,when,foreach,if
+	 2)xml   --><xml:-->
+	 3)format--><fmrt:-->
+	 4)function--><fn:-->
+	 5)sql     --><sql:-->
+3)what is maven and Explain maven command <mvn clean install> 
+ans:- maven is a build  and dependences management tool  and building the war (web archive web deployable file)file  .
+     a) cleaning exiting war file 
+     b) building new war file where required components are added into war
+4)what is SVN. And how amny types of Repository System.
+ans:- two types:-
+     a)local repository
+     b)centralized repository
+     c)remote repository
+5)what will be the Output of the program?
+  package blocks;
+
+class Parent {
+	static {
+		System.out.println("parent static block");
+	}
+	{
+		System.out.println("parent instance block");
+	}
+
+	Parent() {
+		System.out.println("parent() constr");
+	}
+}
+
+class Child extends Parent{
+	static {
+		System.out.println("Child static block");
+	}
+	{
+		System.out.println("Child instance block");
+	}
+
+	Child() {
+		System.out.println("Child() constr");
+	}
+}
+
+public class FlowExample {
+	public static void main(String[] args) {
+		new Child();
+		System.out.println("------------------");
+		new Child();
+	}
+}
+/*
+Ans:- O/P;-
+---------
+parent static block
+Child static block
+parent instance block
+parent() constr
+Child instance block
+Child() constr
+---------------
+parent instance block
+parent() constr
+Child instance block
+Child() constr
+*/
+
+6)what will be the of the program?
+Ans:-
+package string;
+
+public class StringConcat {
+
+	public static void main(String[] args) {
+		String s1="hemant";
+		String s2="hemant";
+		String s3="hihemant";
+		String s4="hi";
+		String s5=s4+s2;
+		System.out.println(s1==s2); //true
+		System.out.println(s3==s5);//false
+
+	}
+
+}
+7)what will be the of the program?
+Ans:-
+package string;
+
+public class StingBuffer {
+
+	public static void main(String[] args) {
+		
+		String s1="hemant";
+		String s2="hemant";
+		StringBuffer sb = new StringBuffer("hemant");
+		System.out.println(s1==s2);//true
+		System.out.println(s1.equals(s2));//true		
+		System.out.println(s1.equals(sb));//false reason:- The equals method of StringBuffer is not overridden from Object
+
+	}
+
+}
+
+8)what will be the of the program?
+Ans:-
+package typecast;
+
+public class TypeCastExplicitExample {
+	public static void main(String[] args) {
+		byte a=10;
+		byte b=20;
+	//	byte c=a+b; //compile time:typecasting
+		byte c=(byte)(a+b);
+		System.out.println(c);//30
+	}
+
+}
+
+
+-------------------------------------------------------------------------------------------------------->
+Deloitte:-
+--------
+1)What is the name of Front controller Spring framework?
+Ans:-DispatcherServlet
+
+2)write a program of prime number ?
+Ans:-a number that is divisible only by itself and 1 (e.g. 2, 3, 5, 7, 11).
+"prime numbers are very useful in cryptography"
+Note: 2 is only one even prime number.
+public class MyPrimeNumCheck {
+
+	public boolean isPrimeNumber(int number) {
+
+		for (int i = 2; i <= number / 2; i++) {
+			if (number % i == 0) {
+				return false;
+			}
+		}
+		return true;
+	}
+
+	public static void main(String a[]) {
+		MyPrimeNumCheck mpc = new MyPrimeNumCheck();
+		System.out.println("Is 17 prime number? " + mpc.isPrimeNumber(17));
+		System.out.println("Is 19 prime number? " + mpc.isPrimeNumber(19));
+		System.out.println("Is 15 prime number? " + mpc.isPrimeNumber(15));
+	}
+}
+
+3)write a program of fibonacci number ?
+package series;
+public class Fibonacci {
+	public static void main(String[] args) {
+		int f1=0;
+		int f2=1;
+		int temp=0;
+		System.out.println(f1+"\n"+f2);
+		for (int i = 0; i < 5; i++) {
+			temp=f1+f2;  //
+			f1=f2;       //
+			f2=temp;     //
+			System.out.println(temp);
+		}
+
+	}
+
+}
+4)Project explanation and role and responsibility?
+5)internal implementation of hash-map?
+6)which one is override to another one between Annotation based and xml based auto-wired?
+ans:- Annotation based overridden by xml based auto wired
+
+---------------------------------------------------------
+
+Deeksha technologies
+-------------------------------------
+* Diff. B/w method overloading and method overriding
+* Immutable object
+* Oops concepts with examples
+* Spring controller class can have same request handling methods
+* Hashtable and hashmap
+* Hashcode and equals methods
+* Spring annotations
+* Dependency injection and it's types
+* Why static methods cannot be ovveriden
+* String and string buffer
+* Collection methods
+
+
+
+
+Tech Mahindra
+-------------------------
+* Program to find duplicates in an array
+* Junit annotations
+* Ioc container in spring
+* Autowiring
+* How to configure bean in spring
+* what is abstract class and interface.Why we use this ?
+* Spring + hibernate integration
+* Difference between PUT and POST
+
+
+
+UST GLOBAL
+==============
+
+ 
+ Dirty Checking in Hibernate.
+ How haspmap will works internally.
+ How to define hashcode() and equals() .
+ Given one program with employee details. And ask to Override hashcode and equals
+ Cretiria Concept in Hibernate. (with where clause, how to  get single column, etc)
+ What are the parameters we have used in Web Services(REST).
+ Dependency Injection and its types.
+ When we will go for Constructor and Setter Injection.
+ SQL query – Delete first 500 records from table.
+ SQL query – how to get all the columns except one column of a table.
+ Hashing Concept and how its work internally.
+ Persist() and Save() in Hibernate. {Full deep }
+ Caching in Hibernate. {Full deep }
+ How IOC will invoke DI(Dependency Injection).
+ Why we use REST Web Services.
+ Current Project Details
+
+
+
+
+
+
+
+Sapiens
+===================
+   SQL Query – How to find 2nd highest Salary (I have written in 2 ways, he asked to one more way)
+   SQL Query -  Update Query using CreateQuery, CreateNativeQuery and Cretiria.
+   SQL Query – Select  * from  table1, table2 (it will work or not)
+   Hashing Concept
+   How you faced critical Situation.
+   If Application is deployed and working properly, What you will do if it is suddenly Crashes.
+   Web Services Program and explanation
+   Hibernate Mapping and with Annotation and explanation.
+   I don’t want to create specific column in table when we will do mapping. What we have to do?
+   Projects with detail Explanation.
+   Project Architecture.
+   What kind of exception you have faced ?
+   When will occurs NumberFormatException and FileNotFoundException.
+   Throw and throws
+   Difference between Hashtable and HashMap
+
+·         Comparable and Comparator. He give Class called Employee and ask to write sorting using firstName of the Employee.
+
+·         Program to Count duplicate words in a String.
+
+·         Program to Count  words of one String in another String.
+
+·         Program to reverse the each words in a String.
+
+·         Program to write prime no.s between m and n. 
+
+·         What is recursion.
+
+·         Write a program for recursion.
+
+·         Linked List – How to take reference of next node.
+
+·         Method Overloading and Overrinding
+
+?)@RequestBody and @ResponseBody in Spring MVC
+ ans:-   	
+Usage examples would be something like this:
+
+Using a JavaScript-library like JQuery, you would post a JSON-Object like this:
+
+{ "firstName" : "Elmer", "lastName" : "Fudd" }
+Your controller method would look like this:
+
+// controller
+@ResponseBody @RequestMapping("/description")
+public Description getDescription(@RequestBody UserStats stats){
+    return new Description(stats.getFirstName() + " " + stats.getLastname() + " hates wacky wabbits");
+}
+
+// domain / value objects
+public class UserStats{
+    private String firstName;
+    private String lastName;
+    // + getters, setters
+}
+public class Description{
+    private String description;
+    // + getters, setters, constructor
+}
+Now if you have Jackson on your classpath (and have an <mvc:annotation-driven> setup), Spring would convert the incoming JSON to a UserStats object from the post body (because you added the @RequestBody annotation) and it would serialize the returned object to JSON (because you added the @ResponseBody annotation). So the Browser / Client would see this JSON result: 
+
+·         Spring MVC Annotations
+
+         Interceptors in Spring MVC
+
+        What is IOC and what it will do ? Why it is Exactly ?
+
+        @qualifier and @required in Spring MVC
+        Pointers concept
+=============================================================================
+                  Aricent:-
+-------------------------------------------------
+1) what w'll be the output of given snippet?
+ 	    String ques = "hemant";
+		System.out.println(ques.indexOf("hem"));
+ans:- 0
+     note:-	indexOf() method returns matching 1st character index value . If not matched then returns -1.and given string is missmatc at least on then
+            also returns -1	.
+
+2) what w'll be the output of given snippet?
+       FileInputStream fis = new FileInputStream("text.txt");
+		System.out.println(fis.available());// 	
+ans:-returns number of characher present in text.txt file
+-----------------------------------------------------------------------
+                         Yantriks
+-----------------------------------------------------------------------							 
+1) where is we used bean scope type prototype?
+2) project complex queries in hibernate?
+3) senario where we used bean scope "prototype"?
+4) what is join and explaing inner and outer join? 			 
+	
+-----------------------------------------------------------------------
+                         nuvizz
+-----------------------------------------------------------------------
+Q)Difference b/w Statement and PrepareStatement
+Q)which appender you used in log4J configuration.
+ans:- FileAppender
+eg:-AsyncAppender, ConsoleAppender, DailyRollingFileAppender, ExternallyRolledFileAppender, FileAppender, JDBCAppender, JMSAppender, NullAppender, RewriteAppender, RollingFileAppender, SMTPAppender, SocketAppender, 
+Q)Hibernate Sequence Generator logic.
+ans:-
+@Id
+@Column(name="user_id", nullable=false)
+@SequenceGenerator(name="my_seq", sequenceName="account_user_id_seq")
+@GeneratedValue(strategy = GenerationType.SEQUENCE ,generator="my_seq")
+private Integer userId;
+
+@SequenceGenerator:-
+------------------
+         a)name:-aliase name 
+		 b)sequenceName:- sequence name(db)
+@GeneratedValue:-
+-----------------
+         a)strategy	:- id generationType
+         b)generator:-aliase name	
+		 
+@GeneratedValue -->just after @Id annotation -->4 types
+      @GeneratedValue(strategy=GenerationType.AUTO)
+	  @GeneratedValue(strategy=GenerationType.IDENTITY)
+	  @GeneratedValue(strategy=GenerationType.SEQUENCE)
+	  @GeneratedValue(strategy=GenerationType.TABLE)-->db independance	
+	  
+-----------------------------------------------------------------------
+                         KPIT
+-----------------------------------------------------------------------
+1)Contract b/w hashcode and equals methods:-
+ans:-
+   1)If equals method return TRUE then both Objects hashcode
+     are must be the same.
+   2)If equals method return FALSE then both objects hashcode
+     are may or may not be the same.
+   3)If tow object hascode are same then equals method may or
+     maynot be returned true.  
+2)Difference b/w @Component and @Service in Spring MVC.?
+3)What is autowirinig and Explain @Qualifier and @AutoWired	 ?
+4)jsp execution process
+5)jstl
+6)maven (types of repository system)
+7)HashMap internal fuctionallity
+
+-----------------------------------------------------------------------
+                         Aricent
+-----------------------------------------------------------------------
+1) what is load balancing and thread pool configuration in weblogics?
+2) print the pattern:-
+          *
+        *   *
+      *	  *   *
+    *	*   *   *
+	
+3)what is roll of Interceptor?
+
+a)second max salary:-
+ SELECT max(sal) FROM emp where sal<(SELECT max(sal) FROM emp);
+ SELECT max(sal) FROM emp where sal not in (SELECT max(sal) FROM emp);
+b)second min salary:-
+SELECT min(sal) FROM emp where sal>(SELECT min(sal) FROM emp); 
+SELECT min(sal) FROM emp where sal not in (SELECT min(sal) FROM emp); 
+
+?) what will happends?
+class Parent{
+	Parent(int a){
+		
+	}
+	
+}
+public class Child extends Parent{
+
+}
+------------------------------------------------------------------------
+                        CGI
+------------------------------------------------------------------------
+?)Find person name those are repeated more than one?
+
+SELECT personname FROM person
+group by personname 
+having count(*)>1;
+
+?)How to delete parent object  as well as associated child object
+ condition:-if 3 associated child object then delete 2 associated object except one
+
+ 
+---------------------------------------------------------------------------
+                      GoodWorkLabs
+--------------------------------------------------------------------------- 	
+?) Immutable class implementation
+?) sorting,sum in list by using stream api
+?) scope operator (::) and Lambda expression
+?) ResponseEntity in Spring boot.
+?) evict and  clear major diff
+ans:-evict clear object from session and factory cache and clear clean objects from local session
+?) why wait method in Object class instead of Thread class 
+?) Difference b/w Spring Data and Hibernate
+?)what is indexing in db
+?)static flow (static block,static method,static bata)
+System.out.println(Thread.currentThread()); //Thread[child thread,priority,main thread]	 == Thread[A,5,main] 
+Note:-Instance block always execute before constructor
+
+----------------------------------------------------------------------------
+
+To create immutable class in java, you have to do following steps.
+
+1)Declare the class as final so it can’t be extended.
+2)Make all fields private so that direct access is not allowed.
+3)Don’t provide setter methods for variables
+4)Make all mutable fields final so that it’s value can be assigned only once.
+5)Initialize all the fields via a constructor performing deep copy.
+6)Perform cloning of objects in the getter methods to return a copy rather than returning the actual object reference.
+
+	  
+		 
+
+
+
+
+	 

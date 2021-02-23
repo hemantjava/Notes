@@ -1,0 +1,575 @@
+﻿?)Three key features of web services:-
+--------------------------------------
+ a)application to application interaction
+ b)should be interOperable ->not platform dependent
+ c)should allows communication over a network
+ 
+?)Structure of web-service:-
+  Service Definition(is a contract between service provider and service consumer) it defined below
+        ->request/response format
+        ->request structure
+        ->response structure
+        ->endpoint
+
+?)Key Terminology:-
+   a) request and response	
+    ->request is input for web-service and response is out from web-service   
+   b) Message Exchange Format
+       ->It is format of request and response either in the form of XML or JSON format
+	   
+?)Web-service types:-
+ 1)SOAP based (Simple Object Access Protocols)
+     contains :-(Structure)
+      SOAP-ENV:Envelop
+	  SOAP-ENV:Header
+	  SOAP-ENV:Body
+	  
+     =======SOAP===============
+      * format
+         SOAP XML Request
+         SOAP XML Response
+      * Transport
+         SOAP over MQ
+         SOAP over HTTP
+      * Service Definition
+         WSDL(Web Service Definition Language) defines:-
+                  ->Request Structure
+                  ->Response structure
+                  ->EndPoint
+                  ->All Operations				  
+	  
+ 2)REST Styled (REpresentational State Transfer):-
+          
+    =======REST===============
+      * format
+	    No restriction . JSON popular
+      * Transport
+        only HTTP
+      * Service Definition
+          No standard. WADL / Swagger ...
+ ---------------------------------------------------------------------
+ 
+ // input - details of user
+ // output - CREATED & Return the created URI
+	@PostMapping("/users")
+	public ResponseEntity<Object> createUser(@Valid @RequestBody User user) {
+		User savedUser = service.save(user);
+		// CREATED
+		// /user/{id}     savedUser.getId()
+		
+		URI location = ServletUriComponentsBuilder
+			.fromCurrentRequest()
+			.path("/{id}")
+			.buildAndExpand(savedUser.getId()).toUri();
+		
+		return ResponseEntity.created(location).build();
+		
+	}
+--------------------------------------------------------------	
+@RequestMapping(value = "/user.xml",
+        method = RequestMethod.POST,
+        consumes = {"application/xml","application/json"},
+        produces = "application/xml")	
+
+------------------------------------------	
+HttpStatus and error
+-------------------------------------------
+1xx Informational responses.
+2xx Success.
+3xx Redirection.
+4xx Client errors.
+5xx Server errors.
+-------------------------------------
+
+1xx: Information
+----------------
+Message:	           Description:
+--------------     -----------------------
+100 Continue	    The server has received the request headers, and the client should proceed to send the request body
+101 Switching       Protocols	The requester has asked the server to switch protocols
+103 Checkpoint  	Used in the resumable requests proposal to resume aborted PUT or POST requests
+
+2xx: Successful
+--------------    
+Message:	           Description:
+--------------     -----------------------
+200 OK				The request is OK (this is the standard response for successful HTTP requests)
+201 Created			The request has been fulfilled, and a new resource is created 
+202 Accepted		The request has been accepted for processing, but the processing has not been completed
+203 Non-Authoritative Information	The request has been successfully processed, but is returning information that may be from another source
+204 No Content		The request has been successfully processed, but is not returning any content
+205 Reset Content	The request has been successfully processed, but is not returning any content, and requires that the requester reset the document view
+206 Partial Content	The server is delivering only part of the resource due to a range header sent by the client
+
+3xx: Redirection
+--------------     
+Message:	          Description:
+--------------     -----------------------
+300 Multiple Choices	A link list. The user can select a link and go to that location. Maximum five addresses  
+301 Moved Permanently	The requested page has moved to a new URL 
+302 Found	            The requested page has moved temporarily to a new URL 
+303 See Other	        The requested page can be found under a different URL
+304 Not Modified	    Indicates the requested page has not been modified since last requested
+306 Switch Proxy	    No longer used
+307 Temporary Redirect	The requested page has moved temporarily to a new URL
+308 Resume Incomplete	Used in the resumable requests proposal to resume aborted PUT or POST requests
+
+4xx: Client Error
+----------------
+Message:	         Description:
+--------------     -----------------------
+400 Bad Request	        The request cannot be fulfilled due to bad syntax
+401 Unauthorized	    The request was a legal request, but the server is refusing to respond to it. For use when         authentication is possible but has failed or not yet been provided
+402 Payment Required	 Reserved for future use
+403 Forbidden	    	The request was a legal request, but the server is refusing to respond to it.
+404 Not Found	    	The requested page could not be found but may be available again in the future
+405 Method Not Allowed	A request was made of a page using a request method not supported by that page
+406 Not Acceptable			The server can only generate a response that is not accepted by the client
+407 Proxy Authentication Required	The client must first authenticate itself with the proxy
+408 Request Timeout	 		The server timed out waiting for the request
+409 Conflict	     		The request could not be completed because of a conflict in the request
+410 Gone	         The requested page is no longer available
+411 Length Required	 The "Content-Length" is not defined. The server will not accept the request without it 
+412 Precondition Failed	 The precondition given in the request evaluated to false by the server
+413 Request Entity Too Large	The server will not accept the request, because the request entity is too large
+414 Request-URI Too Long	The server will not accept the request, because the URL is too long. Occurs when you convert a POST request to a GET request with a long query information 
+415 Unsupported Media Type	The server will not accept the request, because the media type is not supported 
+416 Requested Range Not Satisfiable	The client has asked for a portion of the file, but the server cannot supply that portion
+417 Expectation Failed	The server cannot meet the requirements of the Expect request-header field
+
+5xx: Server Error
+--------------     
+Message:	            Description:
+--------------     -----------------------
+500 Internal Server Error	A generic error message, given when no more specific message is suitable
+501 Not Implemented	The server either does not recognize the request method, or it lacks the ability to fulfill the request
+502 Bad Gateway	The server was acting as a gateway or proxy and received an invalid response from the upstream server
+503 Service Unavailable	The server is currently unavailable (overloaded or down)
+504 Gateway Timeout	The server was acting as a gateway or proxy and did not receive a timely response from the upstream server
+505 HTTP Version Not Supported	The server does not support the HTTP protocol version used in the request
+511 Network Authentication Required	The client needs to authenticate to gain network access
+-------------------------------------------------------
+Default Exception structure provide by spring framework:-
+--------------------------------------------------------
+{
+    "timestamp": 1517251211922,
+    "status": 404,
+    "error": "Not Found",
+    "exception": "com.hemant.rest.exceptionn.UserNotFountException",
+    "message": "not found id : 123",
+    "path": "/user/123"
+}
+---------------------------------------------------
+user defined Exception structure as response:-
+--------------------------------------------
+a) 1st Way:-
+-------------
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+@ResponseStatus(HttpStatus.NOT_FOUND)
+public class UserNotFoundException extends RuntimeException {
+	public UserNotFoundException(String message) {
+		super(message);
+	}
+}
+
+b) 2nd way:-
+------------
+ 1.) defined structure of exception response:-
+----------------------------------------------
+import java.util.Date;
+
+public class ExceptionResponse {
+	private Date timstamp;
+	private String message;
+	private String details;
+	public ExceptionResponse(Date timstamp, String message, String details) {
+		super();
+		this.timstamp = timstamp;
+		this.message = message;
+		this.details = details;
+	}
+	public ExceptionResponse() {
+		
+	}
+	
+	/*Note:- setter method is not required*/
+	public Date getTimstamp() {
+		return timstamp;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public String getDetails() {
+		return details;
+	}
+	
+}
+
+2.)defined custom exception class Universal:-
+---------------------------------------------
+package com.hemant.rest.exceptionn;
+
+import java.util.Date;
+
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+//import org.springframework.web.bind.annotation.ControllerAdvice;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+//import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.WebRequest;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+/*
+@ControllerAdvice
+@RestController
+*/
+    //OR
+@RestControllerAdvice
+public class CutomizedResponseEntityExceptionHandler extends ResponseEntityExceptionHandler{
+	
+	//user defined method handleAllException universal for all type of exception
+	@ExceptionHandler(Exception.class)
+	public final ResponseEntity<Object> handleAllException(Exception exception, WebRequest request){
+		
+		ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), exception.getMessage(), request.getDescription(false));
+		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.INTERNAL_SERVER_ERROR);	
+	}
+	
+	@ExceptionHandler(UserNotFountException.class)
+	public final ResponseEntity<Object> handleUseNotFoundException(Exception exception, WebRequest request){
+		
+		ExceptionResponse exceptionResponse = new ExceptionResponse(new Date(), exception.getClass().getName(), request.getDescription(false));
+		return new ResponseEntity<Object>(exceptionResponse, HttpStatus.NOT_FOUND);
+		
+	}
+}
+------------------------------------------------------------------------------------------------------
+Validation;-(javax.validation.)/ hibernate 5 validator
+-------------------------------------------------------
+@Past
+@Future
+@Size
+@Pattern
+@Max
+@Min
+@NotNull
+@Null
+
+Note:- Listed Above annotations annotated with bean/entity's Properties
+
+enable validation checking in Controller class;-
+-----------------------------------------------
+public ResponseEntity<Object> getMessage(@Valid @RequestBody Employee employee){
+......
+}
+--------------------------------------------------------------------------------------------------------
+?)What is difference b/w @RequestParam and @PathVariable
+--------------------------------------------------------
+ Both @RequestParam and @PathVariable annotations are used for accessing the values from the request.
+ The key difference between @RequestParam and @PathVariable is that @RequestParam used for accessing the values of the query parameters.
+ where as @PathVariable used for accessing the values from the URI template.
+ 
+Example:- @RequestParam
+-------------------------
+http://localhost:8080/springmvc/hello/101?param1=10&param2=20
+In the above URL request, the values for param1 and param2 can be accessed as below:
+
+public String getDetails(
+	@RequestParam(value="param1", required=true) String param1,
+        @RequestParam(value="param2", required=false) String param2){
+.................
+} 
+
+
+The following are the list of parameters supported by the @RequestParam annotation:-
+-----------------------------------------------------------------------------------
+defaultValue – This is the default value as a fallback mechanism if request is not having the value or it is empty.
+name – Name of the parameter to bind
+required – Whether the parameter is mandatory or not. If it is true, failing to send that parameter will fail.
+value – This is an alias for the name attribute
+
+------------------------------------------------------
+HATEOAS :-
+--------
+(Hypermedia as the Engine of Application State) is a constraint of the REST application architecture.
+A hypermedia-driven site provides information to navigate the site's REST interfaces dynamically by including hypermedia links with the responses.
+
+	 Resource<User> resouce = new Resource<User>(user);
+             
+             ControllerLinkBuilder builder = ControllerLinkBuilder.linkTo(ControllerLinkBuilder.methodOn(this.getClass(), getAllUser()));
+             resouce.add(builder.withRel("All-user"));
+			 
+-----------------------------------------------------------------------------
+
+Getting data in json to xml format:-
+----------------------------------
+there is 2 steps:-
+a)add jackson-dataformat dependency in pom.xml
+<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-xml -->
+<dependency>
+    <groupId>com.fasterxml.jackson.dataformat</groupId>
+    <artifactId>jackson-dataformat-xml</artifactId>
+    <version>2.4.3</version>
+</dependency>
+		
+b)make sure client header request 
+  accept    <---->      application/xml
+  
+-------------------------------------------------------------------------------------
+
+
+Documentation for rest api:- swagger2 (documentation format)
+------------------------------------------------------------ 
+for consumer interaction purpose to easy understand 
+what is request format, what is URI etc.
+
+Note :- where request/response are defined
+  	<!-- https://mvnrepository.com/artifact/io.springfox/springfox-swagger2 -->
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger2</artifactId>
+			<version>2.4.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>io.springfox</groupId>
+			<artifactId>springfox-swagger-ui</artifactId>
+			<version>2.4.0</version>
+		</dependency>
+		
+-------------------------------------
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+@Configuration
+@EnableSwagger2 //enabling swagger
+public class SwaggerCofig {
+ private static final Contact CONTACT = new Contact("hemant", "Hello world", "hemantjava90@gmail.com");
+ private static final ApiInfo API_INFO = new ApiInfo("title aplication hemant", "description", "versio ", "service url", CONTACT, "licence 3.0", "Licence URL",Collections.emptyList());
+ private static final Set<String> SET_RESPONSE_TYPE = new HashSet<>(Arrays.asList("application/json","application/xml"));
+	@Bean
+	public Docket api() {
+		return new Docket(DocumentationType.SWAGGER_2).apiInfo(API_INFO ).consumes(SET_RESPONSE_TYPE).produces(SET_RESPONSE_TYPE);
+	}
+
+}
+
+                                       OR
+
+@Configuration
+@EnableSwagger2
+public class SwaggerConfig {
+    @Bean
+    public Docket productApi() {
+        return new Docket(DocumentationType.SWAGGER_2)
+        		.select()                                  
+                .apis(RequestHandlerSelectors.any())              
+                .paths(PathSelectors.any())                          
+                .build();
+             
+    }									   
+									   
+	
+
+
+
+                                     OR
+
+
+
+package com.hemant.spring.data.config;
+
+import java.util.Collections;
+
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+
+import springfox.documentation.builders.PathSelectors;
+import springfox.documentation.builders.RequestHandlerSelectors;
+import springfox.documentation.service.ApiInfo;
+import springfox.documentation.service.Contact;
+import springfox.documentation.spi.DocumentationType;
+import springfox.documentation.spring.web.plugins.Docket;
+import springfox.documentation.swagger2.annotations.EnableSwagger2;
+
+@Configuration
+@EnableSwagger2
+public class SwaggerConfig {
+
+	private static final Contact CONTACT = new Contact("hemant", "Hello world", "hemantjava90@gmail.com");
+	// private static final Set<String> SET_RESPONSE_TYPE = new
+	// HashSet<>(Arrays.asList("application/json","application/xml"));
+
+	private static final ApiInfo API_INFO = new ApiInfo("title aplication hemant", "description", "versio ",
+			"service url", CONTACT, "licence 3.0", "Licence URL", Collections.emptyList());
+
+	@Bean
+	public Docket productApi() {
+		return new Docket(DocumentationType.SWAGGER_2).apiInfo(API_INFO).select().apis(RequestHandlerSelectors.any())
+				.paths(PathSelectors.any()).build();
+
+	}
+}									 
+
+Some Controller's method level Annotations:-
+------------------------------------------
+@ApiOperation
+@ApiResponses
+@ApiResponse 
+@Api(value="onlinestore", description="Operations pertaining to products in Online Store") Class Level
+	Examples:-
+	
+	@ApiOperation(value = "View a list of available products by ID", response = Iterable.class)
+	@ApiResponses(value = { @ApiResponse(code = 200, message = "Successfully retrieved list"),
+			@ApiResponse(code = 401, message = "You are not authorized to view the resource"),
+			@ApiResponse(code = 403, message = "Accessing the resource you were trying to reach is forbidden"),
+			@ApiResponse(code = 404, message = "The resource you were trying to reach is not found") })	
+									   
+
+Some annotations for bean:-
+---------------------------
+@ApiModel(description="")--class level
+@ApiModelProperty(notes="")--property level
+-----------------------------------
+http://localhost:9112/swagger-ui.html
+http://localhost:9112/v2/api-docs
+		
+-------------------------------------------------------------------------------------
+Filtering:- If we don't want to show some fields to end user
+-------------------------------------------------------------
+==>static filtering:-
+-------------------
+a)1st approach:-
+@JsonIgnore --> at property level (com.fasterxml.jackson.annotation.JsonIgnore)  -->preferred approach
+
+b)2nd approach:-
+@JsonIgnoreProperties -->class level (com.fasterxml.jackson.annotation.JsonIgnoreProperties)
+
+==>Dynamic filtering:-
+---------------------
+	public ResponseEntity<?> getStudentListV1() {		
+		
+		List<Student> studentList =dao.getList();
+		SimpleBeanPropertyFilter filter = SimpleBeanPropertyFilter.filterOutAllExcept("id","firstName","lastName","addr");
+		FilterProvider provider = new SimpleFilterProvider().addFilter("BeanFilter", filter);
+		MappingJacksonValue jacksonValue = new MappingJacksonValue(studentList);
+		jacksonValue.setFilters(provider);		
+		return new ResponseEntity<>(jacksonValue,HttpStatus.OK);
+			
+	}
+	
+@JsonFilter("BeanFilter")
+@JsonIgnoreProperties(ignoreUnknown=true)
+public class Student {
+}
+
+
+-------------------------------------------------------------
+Versioning  in API:-
+-------------------
+based on user requirement we change response type 
+by using Versioning 
+------------------------------------------------
+Example:- Versioning we can do 4 ways uri versioning, params Versioning,headers versioning,produces versioning
+------------
+
+1)way:-(url)
+======
+@GetMapping(value = "v1/user")	
+public User getUser(){
+
+}
+
+@GetMapping(value = "v2/user")	
+public User getUser(){
+
+}	
+
+1)http://localhost:8080/v1/user
+2)http://localhost:8080/v2/user
+
+2)way:-(param)
+======
+@GetMapping(value = "user/param", params ="version=1")	
+public User getUser(){
+
+}
+
+@GetMapping(value = "user/param", params ="version=2")	
+public User getUser(){
+
+}
+			 
+1)http://localhost:8080/user/value?version=1
+2)http://localhost:8080/user/value?version=2
+
+3)way:-(header)
+==============
+
+@GetMapping(value = "user/header", headers ="X-VERSION=1")	
+public User getUser(){
+
+}
+
+@GetMapping(value = "user/header", headers ="X-VERSION=2")	
+public User getUser(){
+
+}
+
+4)way (Produces)
+=================
+	@GetMapping(value="/produces",produces="application/vnd.company-v1+json")
+	public Person1 getProduces1() {
+
+		return new Person1("bob");
+	}
+
+	@GetMapping(value="/produces",produces="application/vnd.company-v2+json")
+	public Person2 getproduces2() {
+
+		return new Person2(new Name("bob", "charlie"));
+	}
+------------------------------------------
+Versioning examples:-
+
+Media type Versioning :- (GitHub)
+header    Versioning :- (Microsoft)
+URI     Versioning   :-(Twitter)   -->easy to generate API documentation Automatic
+Request param Versioning:- (Amazon) -->easy to generate API documentation  Automatic
+
+-----------------------------------------------------
+
+Note:-
+=====
+   Spring Data internally used (Hibernate)
+
+----------------------------------------------------------
+Respose as a xml and JSON:-
+--------------------------
+1). add dependency 
+	<!-- https://mvnrepository.com/artifact/com.fasterxml.jackson.dataformat/jackson-dataformat-xml -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-xml</artifactId>
+		</dependency>
+
+2). set header request:-
+    Accept     --      application/xml
+
+-----------------------------------------------------------
+important:- Richarson Maturity model(rest api implementaion)
+
+--------------------------------------------------------------------------------------
+
+
+
+
+			 

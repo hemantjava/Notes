@@ -1,0 +1,161 @@
+<!-- reading property file -->
+<context:property-placeholder location="classpath:data.properties"/>
+
+<!-- scanning component from package and sub package -->
+<context:component-scan base-package="com.hemant.spring"/> 
+then no need to configure <context:annotation-config />
+
+<!-- Enabling annotations -->
+<context:annotation-config />
+
+Note:- Bean life cycle  Destroy() is called when close() method is called 
+
+-----------------------------------
+?)Ways of Configuration spring configuration file:-
+1)xml approach
+2)xml and annotation approach
+----------------------------------------------------------------------------------
+3)Complete Java based configuration Approach
+
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+
+@Configuration
+@ComponentScan("com.hemant.spring") //@ComponentScan optional if we configure bean as @Bean
+@PropertySource("classpath:resource/data.properties")
+public class AppConfiguration {
+
+//read from data.properties and assign value in email property(variable)
+@Value("${spring.msg}")
+private String email;
+
+//Configuration of bean
+@Bean
+	public Coach simCoach() {
+		
+	 return new WsimCoach();
+		
+	}
+}
+
+and Loading AppConfiguration.class:-
+
+AnnotationConfigApplicationContext annotationConfigApplicationContext = new AnnotationConfigApplicationContext(AppConfiguration.class);
+--------------------------------------------------------------------------------------------------------------------------------------
+
+Spring MVC:-
+------------
+                      web.xml
+-----------------------------------------------------------
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/javaee   
+    http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+	<servlet>
+		<servlet-name>sonu</servlet-name>
+		<servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
+		<!-- <init-param> tag or element are always used before <load-on-startup> element it
+		will load without ContextLoaderListener-->
+		<init-param>
+			<param-name>contextConfigLocation</param-name>
+			<param-value>/WEB-INF/naveen.xml </param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+
+	</servlet>
+	<servlet-mapping>
+		<servlet-name>sonu</servlet-name>
+		<url-pattern>/</url-pattern>
+	</servlet-mapping>
+</web-app>  
+---------------------------------------------------------
+                springConfiguration.xml file
+----------------------------------------------------------
+
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:p="http://www.springframework.org/schema/p"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans  
+http://www.springframework.org/schema/beans/spring-beans-3.0.xsd  
+http://www.springframework.org/schema/context  
+http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+     <context:component-scan base-package="com.hemant.mvc"/>
+	<bean
+		class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+		<property name="prefix" value="/WEB-INF/view/jsp/" />
+		<property name="suffix" value=".jsp" />
+	</bean>
+</beans>  
+--------------------------------------------------------
+   @RequestMapping(path="/processForm", method=RequestMethod.POST)
+	public String helloworld(HttpServletRequest request , Model model) {
+		
+		model.addAttribute("message", request.getParameter("name").toUpperCase());
+		note:-here "message" is attribute name
+		return "helloworld";
+	}
+	             
+	  // request.getParameter("name") = @RequestParam("name")
+	
+	              OR
+				  
+	@RequestMapping(path="/processForm", method=RequestMethod.POST)
+	public String helloworld(@RequestParam("name") String pname , Model model) {
+		
+		model.addAttribute("message", pname.toUpperCase());
+		/*note:-here "message" is attribute name*/
+		return "helloworld";
+	}
+------------------------------------------------------------
+?)Reading value in JPS page from model:-
+---------------------------------------
+ 1.) ${param.name}
+ 2.) ${message} --->attribute name
+ 
+-----------------------------------------------------------------------------
+->To avoid ambiguity by using @RequestMapping("/two") on class level
+
+@RestController
+@RequestMapping("/two")	 //parent mapping to resolve ambiguity mapping
+public class ControllerTwo {
+	
+@GetMapping("/hello")	
+public String getMessage() {
+		
+		return "ControllerTwo";
+	}
+
+} 
+
+------------------------------------------------------------------------------
+@RestController
+@RequestMapping("/one")	
+public class ControllerOne {
+
+@GetMapping("hello")	
+public String getMessage() {
+		
+		return "ControllerOne";
+	}
+}
+
+------------------------------------------------------------------------------
+Note:- Binding the value from form data to theStudent data.
+->getMessage(@ModelAttribute("student") Student theStudent){
+
+}
+-----------------------------------------------------------------------------
+                                  Hibernate
+-----------------------------------------------------------------------------								  
+ 
+ 
+
+ 
+
+
+
+
+
+

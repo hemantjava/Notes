@@ -1,0 +1,105 @@
+1)what is Singleton class?
+ans):-class produce one object per JVM / per application
+Example:-
+--------
+// Java program implementing Singleton class
+// with getInstance() method
+class Singleton
+{
+    // static variable single_instance of type Singleton
+    private static Singleton single_instance = null;
+ 
+    // variable of type String
+    public String s;
+ 
+    // private constructor restricted to this class itself
+    private Singleton()
+    {
+        s = "Hello I am a string part of Singleton class";
+    }
+ 
+    // static method to create instance of Singleton class
+    public static Singleton getInstance()
+    {
+        if (single_instance == null)
+            single_instance = new Singleton();
+ 
+        return single_instance;
+    }
+}
+Note:- also be ready for what are eager,lazy singleton class and best approach is Enum 
+to create singleton class.
+---------------------------------------------------------------------------------------
+2)what doubled checked is Singleton class?
+Ans:-
+class SomeClass {
+  private Resource resource = null;
+  public Resource getResource() {
+    if (resource == null) {
+      synchronized {
+        if (resource == null) 
+          resource = new Resource();
+      }
+    }
+    return resource;
+  }
+}
+----------------------------------------------------------------------------------------
+3)what is immutability and how to make your own immutable class?
+ans:-
+----
+Immutable Objects. An object is considered immutable if its state cannot change after it is constructed
+--
+To create immutable class in java, you have to do following steps.
+
+1.Declare the class as final so it can’t be extended.
+2.Make all fields private so that direct access is not allowed.
+3.Don’t provide setter methods for variables
+4.Make all mutable fields final so that it’s value can be assigned only once.
+5.Initialize all the fields via a constructor performing deep copy.
+6.Perform cloning of objects in the getter methods to return a copy rather than returning the actual object reference.
+
+Example:-
+--------
+public final class ImmutableStudent {
+    private final int id;
+    private final String name;
+    public ImmutableStudent(final int id, final String name) {
+        this.name = name;
+        this.id = id;
+    }
+    public int getId() {
+        return id;
+    }
+    public String getName() {
+        return name;
+    }
+}
+---------------------------------------------------------------------------------------------
+4)Difference b/w method overriding and loading?
+5)Difference b/w interface and abstract class?
+6)Difference b/w ArrayList ans LinkedList?
+7)explain "public static void main(String[] args)"?
+ans:-
+   public :- JVM can call main method from anywhere
+   static :- main method directly call by class name without creating any type of object.
+   void: -main method returns nothing
+   main :- name that pre-defined in jvm
+   String[] are:- string array for command line arguments (input). 
+8)HashMap internal implementation?
+9)Serialization and de serialization?
+10)what is multi-threading and how many ways to create thread object?
+11)difference b/w hashMap and concurrentHashMap
+12)what is cloning and difference b/w deep and shallow cloning?
+13)what is generic?
+14)what deadloack condition?
+15)JVM Memory management system
+ans:-
+----
+1.Method area:-(class area):-Metadata,static data member
+2.Heap area:- instance object (new operator)
+3.Stack area:-methods execution in frame
+4.PC register:-instruction of next statements
+5.Native stack area:-native method execution like hashcode(),notify(),clone() etc.
+
+   

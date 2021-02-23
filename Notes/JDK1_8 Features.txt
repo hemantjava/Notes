@@ -1,0 +1,112 @@
+1) lambda expression
+2) functional interfaces
+3) default method inside of interface
+4) static method inside of interface
+5) forEach method inside of java.lang.Iterable(i)
+6) predefined functional of interface.(java.util.fuction)package
+
+
+      a)Predicate<T>    -->T(input param) always return true/false	
+	  
+	   Ex:- interface Predicate<T> {
+	     public boolean test(T t);
+	   }
+	   
+	  b)Function<T,R>   -->T(input param) & R(return param)
+	    Ex:- interface Function<T,R>  {
+	     public R apply(T t,R r);
+	   }
+	   
+	  c)Consumer<T>     --->not return anythings.  
+	    public interface Consumer<T>{
+		  public void accept(T t);
+		}
+		
+      d)BiConsumer<T,R>     --->not return anythings.  
+	    public interface BiConsumer<T,R>{
+		  public void accept(T t,R r);
+		}
+		
+      e) Supplier<R>
+        public interface Supplier<R>{
+		 public R get();
+		}	    
+		
+7) :: (method reference) Operator  
+       for method(instance/static) and constructor reference implementation
+	   
+8) Stream
+     --> to process object from the collection then we should go for stream.
+	    Ex:- Stream s = collectionObject.stream();   // getting stream object
+		     filter(Predicate<T> t) -->based on some boolean condition
+             map(Fuction<T,R> f)
+                 ---> after filter and map
+             collect()
+			 flatmap()
+             count()
+             min(Comparator c)
+			 max(Comparator c)
+			 sum()
+			 mapToInt()
+			 sorted()
+			 sorted(Comparator c)
+			 forEach(()->)
+			 toArray()
+			 ---------------
+			 Stream.of()--->perform group of values and array 
+			 
+------------------------------------------------------------------------------------------------
+Person result1 = persons.stream()                               // Convert to stream
+                .filter(x -> "jack".equals(x.getName()))        // we want "jack" only
+                .findAny()                                      // If 'findAny' then return found
+                .orElse(null);                                  // If not found, return null
+				
+int sum = widgets.stream()
+                      .filter(w -> w.getColor() == RED)
+                      .mapToInt(w -> w.getWeight())
+                      .sum();
+
+How to convert Array to Stream
+        String[] array = {"a", "b", "c", "d", "e"};
+
+        //Arrays.stream(arr[])
+        Stream<String> stream1 = Arrays.stream(array);					  				
+				
+        //Stream.of
+        Stream<String> stream2 = Stream.of(array);
+        stream2.forEach(x -> System.out.println(x));
+		
+how to conver Stream to Array
+          		String[] array = stream2.toArray(new String[]::new);
+-------------------------------------------------------------------------------------------------	
+
+10) Optional:-
+--------------
+
+?????????????????????//		 
+			 
+9)Date and Time API(java.time.*)
+    a)LocalDate
+	b)LocalTime
+	c)LocalDateTime
+	d)Period
+	e)Year
+	f)ZoneId
+	g)ZonedDateTime
+	e)Instant
+	f)Duration
+
+--------------------------------------------------------------------------
+	
+import java.util.IntSummaryStatistics;
+	IntSummaryStatistics stats = numbers.stream().mapToInt((x) -> x).summaryStatistics();
+
+		System.out.println("Highest number in List : " + stats.getMax());
+		System.out.println("Lowest number in List : " + stats.getMin());
+		System.out.println("Sum of all numbers : " + stats.getSum());
+		System.out.println("Average of all numbers : " + (int)stats.getAverage());
+			 
+			 
+              			 
+		
+	   

@@ -1,0 +1,193 @@
+?)How to resolve Ambiguity in Bean Wiring(injection)?
+ans:- there are three ways we can resolve the ambiguity:-
+  a.Bean Property name
+  b.@Primary
+  c.@Qualifier
+  
+?)How to make Scope of bean Object?
+ans:
+@Scope(ConfigurableBeanFactory.SCOPE_PROTOTYPE) //SCOPE_SINGLETONE ,FACTORY_BEAN_PREFIX
+@Scope("prototype")  
+
+?)Where we used SCOPE_PROTOTYPE in our application?
+ans: If our requirement is getting the database connection per user, but proxyMode=ScopedProxyMode.TARGET_CLASS ensure
+the our application will give new connection object each request.
+
+?)Setting log file in spring boot;
+ans: a)application.properties ->logging.level.org.springframework  = debug
+     b)private static final Logger LOG = LoggerFactory.getLogger(Binaryserach.class); 
+	 import org.slf4j.Logger;
+     import org.slf4j.LoggerFactory;
+	 LOG.info("{}", sortAlgorithm+"Demo logging message"); <=>
+	 2018-01-04 11:04:21.809  INFO 21320 --- [ main] com.hemant.spring.basic.demo.Demo  : com.hemant.spring.basic.beans.Binaryserach@59cba5aDemo logging message
+	 
+?)Life Cycle annotation in Spring
+    @PostConstruct-->execute just after beans are created
+    @PreDestroy	-->Execute just before bean destroyed
+
+?)CDI(context and Dependency Injection):-(javax.inject)
+ans:- Java EE Dependency injection standard (JSR330) 
+      Spring supports most annotations:-
+      @Inject(@Autowired)
+      @Named(@Component and @Qualifier)
+      @Singleton(Defines a Scope of singleton)	  
+	 
+?)Stereo Type Annotations in Spring
+ans:-4 types of stereo types of annotations : -
+            a)Component ->generic type annotation
+			b)Service  ->Business layer
+			c)Repository ->Persistence layer
+			d)Controller -> View Layer
+			
+=============================================================================================
+-----------------------------JUNIT TESTING---------------------------------------------------
+=============================================================================================			
+?)Annotations for junit	test cases:-
+ans:-
+  a)@BeforeClass -->Execute before class is loaded  -->static class level methods
+  b)@AfterClass -->Execute after class is unloaded  -->static class level methods
+  c)@Before -->Execute before test method is executed 
+  d)@After -->Execute after test method is executed	
+  e)@Test --> execute the test methods
+  f)@Ignore -->Skipping the test cases 
+-->some couples of methods:-
+    assertEquals(expected,actual); 
+    assertTrue(boolean);
+    assertFalse(boolean);	
+	assertNull(object);
+	assertArrayEquals(expected,actual); 
+	
+----------------------------------------------------------------------------------------------
+----------------------------------Mockito-----------------------------------------------------
+----------------------------------------------------------------------------------------------
+
+DataService dataServiceMock = mock(DataService.class); 
+when(dataServiceMock.retrieveAllData()).thenReturn(new int[] { 24, 15, 3 });
+           or
+@Mock 
+DataService dataServiceMock;	
+
+@InjectMocks
+SomeBusinessImpl businessImpl;
+
+
+@RunWith(SpringRunner.class)
+@ContextConfiguration(classes=MockitoDemoApplication.class)-->loading configuration file(class)
+//@ContextConfiguration(locations="/applicationnContext.xml")-->loading configuration file(xml)
+public class MockitoDemoApplicationTests {	
+
+}
+
+-----spring boot test class------------------
+@RunWith(SpringRunner.class)
+@SpringBootTest
+public class MockitoDemoApplicationTests {
+
+	@Test
+	public void contextLoads() {
+	}
+
+}
+
+
+     OR
+	 
+@RunWith(SpringJUnit4ClassRunner.class)
+@SpringBootTest
+public class MockitoDemoApplicationTests {
+
+	@Test
+	public void contextLoads() {
+	}
+
+}	 
+-----------------------------------------------------------------------------------------------------
+----------------------------------------WEB Applicatoin--------------------------------------------------
+---------------------------------------------------------------------------------------------------
+ For Servlet Dependency (servlet.jar)    
+-------------------------------------- 
+	   <dependency>
+			<groupId>javax</groupId>
+			<artifactId>javaee-web-api</artifactId>
+			<version>6.0</version>
+			<scope>provided</scope>
+		</dependency>
+
+Annotations(servlet 3.0):-
+------------------------
+@WebServlet
+@WebFilter
+@WebListener
+------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------
+-------------------------Configuration Spring WEB MVC Applicatoin-----------------------
+---------------------------------------------------------------------------------------------------
+ web.xml 
+---------
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="http://java.sun.com/xml/ns/javaee"
+	      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	      xsi:schemaLocation="http://java.sun.com/xml/ns/javaee
+	      http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd"
+	      version="3.0">
+	      
+<servlet>
+	<servlet-name>dispatcher</servlet-name>
+	<servlet-class>
+		org.springframework.web.servlet.DispatcherServlet
+	</servlet-class>
+	<init-param>
+		<param-name>contextConfigLocation</param-name>
+		<param-value>/WEB-INF/todo-servlet.xml</param-value>
+	</init-param>
+	<load-on-startup>1</load-on-startup>
+</servlet>
+
+<servlet-mapping>
+	<servlet-name>dispatcher</servlet-name>
+	<url-pattern>/*</url-pattern>
+</servlet-mapping>
+</web-app>
+------------------------------------------------
+?).create Spring MVC controllers with @Controller and map requests with request
+ mapping annotations e.g.(//Version 5.0)(need to cross check)
+
+ @RequestMapping,
+ 
+ @GetMapping,
+ @PostMapping,
+ @PutMapping,
+ @DeleteMapping and
+ @PatchMapping
+ 
+ ?)Given annotations Supported Dependency
+ <dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webmvc</artifactId>
+			<version>5.0.2.RELEASE</version>
+</dependency>
+
+Note:- 
+-------
+@ResponseBody //if wants method returns response not page to the browser (client)
+@RequestParam  :-read the value from requested query params
+ModelMap :- store the value in the form of key,value pair. which available direct to view
+------------------------------------------------------------------------------------------------------
+ 
+------------------Configuration Spring boot Application -----------------------
+
+-----------------------------------------------------------------------------------------------------
+Actuator :- monitoring Our application and inspecting our application
+hal-browser :- by using this we can see results of our application 
+
+<!-- https://mvnrepository.com/artifact/org.springframework.boot/spring-boot-devtools -->
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-devtools</artifactId>
+    <version>1.3.0.RELEASE</version>
+</dependency>
+
+spring-boot-devtools:Auto reload quickly our application only changes files(sources) are recompiled 
+    best option for development and production.
+-----------------------------------------------------------------------------
+

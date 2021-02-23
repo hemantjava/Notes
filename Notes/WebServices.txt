@@ -1,0 +1,15 @@
+RESTFull Webservices:-
+
+Annotations:-
+-------------
+@Path(String url)----->class and method level
+
+@Path({param})   ---->dynamic variable
+-------------->method level annotation
+@GET
+@POST
+@PUT
+@DELETE
+@Produces(MediaType.TEXT_PLAIN)/APPLICATION_JSON/APPLICATION_JSON  ->specify the response format
+
+@XmlRootElement -->for bean class to intimate root class

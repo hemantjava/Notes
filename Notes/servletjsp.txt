@@ -1,0 +1,154 @@
+SERVLET:-
+========
+web application:-
+----------------
+    server side technology and provide services to client cross the globe.
+web container:-
+--------------
+    predefined application provided by the server and responsible for dynamic resources.
+life cycle of servlet:-
+----------------------
+       a)doesn't exist
+       b)instantiation
+       c)initialization
+       d)service
+       e)destroy
+Note:- SERVLET life cycle is taken care by SERVLET container.
+-----  	   
+javax.servlet.Servlet(i):-
+------------------------
+it has 5 abstract methods:-
+          life cycle methods are 3 type:-
+		    1).int(ServletConfig cfg) throws SE
+            2).service(ServletRequest request, ServletResponse response) throws SE
+			3).destroy()
+		Non life cycle methods:-	
+			4).ServletConfig getServletConfig()
+			5).String getServletInfo()
+Note:- Servlet follows "Single instance multiple thread model"			
+
+Deployment Descriptor file(web.xml):-
+-------------------------------------
+ <web-app>
+    <servlet>
+      <servlet-name></servlet-name>
+      <servlet-class></servlet-class> 	  
+    <servlet>
+	<servlet-mapping>
+	  <servlet-name></servlet-name>
+	  <url-pattern>/</url-pattern>
+	</servlet-mapping>
+ </web-app>
+
+Reading request parameter:-(javax.servlet.ServletRequest(i))
+------------------------------------------------------------
+1) String getParameter(String)   --> reads one value at a time.
+2) String[] getParameterValues(String)   --> reads multiple values at a time.
+3) Enumeration getParameterNames()   --> reads all requested values at a time.
+4) Map getParameterMap()   --> reads all requested values at a time.
+
+Exception Handling in servlet:-
+-------------------------------
+there are 2 types :-
+1).Programmatic approach / local ->java
+2).Declarative approach / globle -->xml
+                   <web-app>
+				   -------
+				   --------
+				     <error-page>
+				       <exception-type>java.lang.Exception</exception-type>
+				       <location>/error.html</location>
+				     </error-page>
+					 -------
+				   --------
+				   </web-app>
+
+---------------------------------------------------
+Methods of :-(javax.servlet.ServletConfig(i))
+-----------------------------------------------------
+ <web-app>
+    <servlet>
+      <servlet-name></servlet-name>
+      <servlet-class></servlet-class>
+	     <init-param>
+		    <param-name></param-name>
+			<param-value></param-value>
+		 </init-param> 	  
+    <servlet>
+	<servlet-mapping>
+	  <servlet-name></servlet-name>
+	  <url-pattern>/</url-pattern>
+	</servlet-mapping>
+ </web-app>
+ 
+ --->reading values from config object:-
+ 1)String getServletName();
+ 2)String getInitParameter(String paramName); ->reads single init-param
+ 3)Enumeration getInitParameterNames();--> reads all init-param
+ 4)ServletContext getServletContext();
+ 
+---------------------------------------------------
+(javax.servlet.ServletContext(i))
+-----------------------------------------------------
+Storing the data we have 2 approaches:-
+ 1).Declarative approach:-
+  ----------------------
+  <web-app>
+    <servlet>
+      <servlet-name></servlet-name>
+      <servlet-class></servlet-class> 	  
+    <servlet>
+	<servlet-mapping>
+	  <servlet-name></servlet-name>
+	  <url-pattern>/</url-pattern>
+	</servlet-mapping>
+	<context-param>
+		    <param-name></param-name>
+			<param-value></param-value>
+    </context-param>
+ </web-app>
+ 
+ 2).Programmatic approach:-
+ -------------------------
+ ctx.setAttribute("key",value); //attribute name and attribute value
+ 
+ Difference b/w parameters and attributes
+ ----------------------------------------
+ 1)In parameters both(k,v) are string types but in Attributes key is string but value is Object type.
+ 2)parameters are read-only but attributes are read and write.
+ 
+ ->Methods to read parameters and attributes from Context Object:-
+ --------------------------------------------------------------
+ 11String getInitParameter(string param)
+ 2)Enumeration getInitParameterNames()   these 2 methods are common for config and context.
+ 3)Object getAttribute(String key)
+ 4)Enumeration getAttributeNames();
+ 
+ Servlet to Servlet Communication:- 2 ways
+ --------------------------------
+ 1)Dispatching mechanism (forwarding/including)
+ 2)Redirection mechanism
+ 
+ javax.servlet.RequestDispatcher(i):-
+ -----------------------------------
+ has provide 2 methods:-
+     1)forward(ServletRequest request,ServletResponse response) 1:1
+	 1)include(ServletRequest request,ServletResponse response) 1:M 
+	 
+Obtainig RequestDispatcher Object:-
+---------------------------------- 
+                  there are 3 ways:-
+		1)request based RequestDispatcher	
+        2)context based RequestDispatcher
+        3)context based NamedDispatcher	
+Ex:-
+      request.getRequestDispatcher("url")
+      context.getRequestDispatcher("/App2/srv2");
+      context.getNamedDispatcher("servletName2");	  
+ 
+ 
+ 
+
+
+  			
+			
